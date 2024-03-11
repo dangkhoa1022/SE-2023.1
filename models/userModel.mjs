@@ -3,53 +3,73 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 const userSchema = mongoose.Schema({
-    name: {
-        type: String,
-        trim: true,
-        required: [true, 'Please tell us your name'],
+  name: {
+    type: String,
+    trim: true,
+    required: [true, "Please tell us your name"],
+  },
+  address: {
+    type: String,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, "Provide your email"],
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: [validator.isEmail, "Please provide a valid email"],
+  },
+  password: {
+    type: String,
+    trim: true,
+    required: [true, "Please provide a password"],
+    minlength: 4,
+    select: false,
+  },
+  passwordConfirm: {
+    type: String,
+    required: [true, "Please confirm your password"],
+    validate: {
+      //ONLY WORKS ON CREATE AND SAVE
+      validator: function (ele) {
+        return ele === this.password;
+      },
+      message: "Password and confirm password are not the same",
     },
-    email: {
-        type: String,
-        required: [true, 'Provide your email'],
-        unique: true,
-        lowercase: true,
-        trim: true,
-        validate: [validator.isEmail, 'Please provide a valid email'],
+  },
+  passwordChangedAt: {
+    type: Date,
+    default: Date.now(),
+  },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
+  },
+
+  role: {
+    type: String,
+    required: true,
+    default: "user",
+  },
+
+  cart: {
+    type: Schema.Types.ObjectId,
+    ref: "Cart",
+  },
+
+  orders: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Order",
     },
-    password: {
-        type: String,
-        trim: true,
-        required: [true, 'Please provide a password'],
-        minlength: 4,
-        select: false,
-    },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'Please confirm your password'],
-        validate: {
-            //ONLY WORKS ON CREATE AND SAVE
-            validator: function (ele) {
-                return ele === this.password;
-            },
-            message: 'Password and confirm password are not the same',
-        },
-    },
-    passwordChangedAt: {
-        type: Date,
-        default: Date.now(),
-    },
-    passwordResetToken: {
-        type: String,
-    },
-    passwordResetExpires: {
-        type: Date,
-    },
-    items: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Laptop',
-        },
-    ],
+  ],
 });
 
 userSchema.pre('save', async function (next) {

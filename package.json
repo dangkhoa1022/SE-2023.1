@@ -5,7 +5,8 @@
     "main": "index.mjs",
     "scripts": {
         "start": "nodemon index.mjs",
-        "test": "node test.mjs"
+        "test": "node test.mjs",
+        "import-laptop": "node ./data/importLaptopData.js --delete && node ./data/importLaptopData.js --import"
     },
     "keywords": [],
     "author": "",

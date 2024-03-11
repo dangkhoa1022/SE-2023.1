@@ -1,5 +1,7 @@
 # SE-2023.1
 
+# Note
+Do tất cả đang sử dụng remote database nên khi có thay đổi database (model, data) thì mọi người cẩn thận do có thể ảnh hưởng đến database của người khác đang sử dụng
 
 # Set up database
 - Install `Mongo Compass`: https://www.mongodb.com/try/download/shell
@@ -8,6 +10,7 @@
 # How to run project
 - Run `npm i` to install all dependencies for project
 - Run `npm start` to run project at `localhost:8000`
+
 
 # Project technologies
 - Using `NodeJS (ExpressJS)` for BE
@@ -28,4 +31,11 @@
 - `./routes` define route for web
 - `./controllers` contain controllers to handle logic between BE and database
 - `./utils` contain utilities 
+
+## Database
+- `./data/laptop.json`: contains all data of laptop in JSON format
+- `./data/store.json`: contains all data of store in JSON format
+- `./data/importData.mjs`: contains code to import laptop data from JSON file to MongoDB database
+- Run `npm import-laptop` at `root` folder to clear laptop data in database and import new laptop data from `laptop.json` to database
+
 
