@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import autopopulate from "mongoose-autopopulate";
 
 const orderSchema = new Schema({
   totalPrice: {
@@ -51,9 +52,13 @@ const orderSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "purchaseItem",
+      autopopulate: true,
     },
   ],
 });
+
+// Enable autopopulation for the 'posts' field
+orderSchema.plugin(autopopulate);
 
 const Order = mongoose.model("Order", orderSchema);
 
