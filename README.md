@@ -36,6 +36,11 @@ Do tất cả đang sử dụng remote database nên khi có thay đổi databas
 - `./data/laptop.json`: contains all data of laptop in JSON format
 - `./data/store.json`: contains all data of store in JSON format
 - `./data/importData.mjs`: contains code to import laptop data from JSON file to MongoDB database
+
+## How to update laptop data in database
+- Update data in `./data/laptop.json`
+- Add/Update images for updated/new laptop in `./public/laptop`
+- Cd to `root` folder
 - Run `npm import-laptop` at `root` folder to clear laptop data in database and import new laptop data from `laptop.json` to database
 
 

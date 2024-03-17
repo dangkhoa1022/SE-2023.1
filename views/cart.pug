@@ -13,18 +13,10 @@ block content
             ul.list-unstyled(data-products = `${JSON.stringify(products) }` data-user = `${JSON.stringify(user || null)}`)
                 
             p.text-right
-                span Phí vận chuyển: 0đ
-                br 
-                span Phí Thu Hộ: 0đ
-                br 
                 span.text-danger.font-weight-bold Tổng cộng: 
-                span.totalCost 
-                span d
+                span.totalCost 0
+                span vnđ
                 br 
-                span.text-danger.font-weight-bold Thanh Toán:  
-                span.totalCost 
-                span d
-                br
                 button.mt-3.btn.btn-primary.btn-lg.buy-btn.purchase-btn(type='button' data-user = `${JSON.stringify(user === null? null : user)}`) ĐẶT HÀNG
                             
 
