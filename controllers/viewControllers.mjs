@@ -46,6 +46,12 @@ const changePassword = (req, res) => {
         title: 'My acount',
     });
 };
+//
+// const forgotPassword = (req, res) => {
+//     res.status(200).render('forgotpassword', {
+//         title: 'forgot password',
+//     });
+// };
 const getMyCart = catchAsync(async (req, res) => {
     let products;
     if (req.user) {
