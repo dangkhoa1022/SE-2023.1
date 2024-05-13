@@ -11,6 +11,7 @@ import productRouter from './routes/productRoute.mjs';
 import viewRouter from './routes/viewRoute.mjs';
 import userRouter from './routes/userRoute.mjs';
 import purchaseRouter from './routes/purchaseRoute.mjs';
+import cartRouter from './routes/cartRoute.mjs';
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const app = express();
@@ -22,9 +23,9 @@ app.use(morgan('dev'));
 
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(
-    express.json({
-        limit: '10kb',
-    })
+	express.json({
+		limit: '10kb',
+	}),
 );
 app.use(cookieParser());
 app.use(mongoSanitize());
@@ -36,4 +37,6 @@ app.use('/', viewRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/purchase', purchaseRouter);
+app.use('/api/cart', cartRouter);
+
 export default app;

@@ -65,7 +65,7 @@ const getMyCart = catchAsync(async (req, res) => {
 	}
 	res.status(200).render('cart', {
 		title: 'My cart',
-		products: cart.items,
+		cart,
 	});
 });
 

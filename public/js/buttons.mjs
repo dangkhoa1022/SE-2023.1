@@ -87,8 +87,67 @@ selectCheckboxs.forEach((checkbox) => {
 			});
 			calculateTotal();
 		}
-		console.log(seclectedPurchaseItems);
 	};
 });
 
 calculateTotal();
+
+const initialItems = {};
+JSON.parse(document.querySelector('ul').dataset.products).forEach((item) => {
+	initialItems[item.id] = JSON.parse(item.quantity);
+});
+
+const updatedItems = Array.from(document.querySelectorAll('div.btn-toolbar'))
+	.map((item) => {
+		let id = item.querySelector('.decreaseBtn').dataset.item;
+		let quantity = item.querySelector('.quantity').innerText;
+
+		return {
+			id,
+			quantity,
+		};
+	})
+	.filter((item) => {
+		return initialItems[item.id] !== item.quantity;
+	});
+
+window.onbeforeunload = function () {
+	fetch(`http://localhost:8000/api/cart/delete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			deletedIds: deletePurchaseItem,
+		}),
+	});
+
+	const initialItems = {};
+	JSON.parse(document.querySelector('ul').dataset.products).forEach((item) => {
+		initialItems[item.id] = JSON.parse(item.quantity);
+	});
+
+	const updatedItems = Array.from(document.querySelectorAll('div.btn-toolbar'))
+		.map((item) => {
+			let id = item.querySelector('.decreaseBtn').dataset.item;
+			let quantity = item.querySelector('.quantity').innerText;
+
+			return {
+				id,
+				quantity,
+			};
+		})
+		.filter((item) => {
+			return initialItems[item.id] !== item.quantity;
+		});
+
+	fetch(`http://localhost:8000/api/cart/update`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			updatedItems,
+		}),
+	});
+};

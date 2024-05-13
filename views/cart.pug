@@ -4,7 +4,8 @@ extend base
 block content
     .bg-light
         .container.bg-white.p-5
-            h3 Giỏ hàng của bạn 
+            - let products = cart.items
+            h3(data-cartid= `${JSON.stringify(cart._id)}`) Giỏ hàng của bạn 
             p.pb-3.border-bottom.border-secondary
                 span.text-danger.font-weight-bold Liên hệ nhân viên trước khi chuyển tiền mua hàng.
                 br
