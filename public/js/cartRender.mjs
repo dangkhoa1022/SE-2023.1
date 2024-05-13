@@ -4,41 +4,41 @@ let products;
 products = JSON.parse(list.dataset.products);
 user = JSON.parse(list.dataset.user);
 const render = () => {
-    let html = products.reduce((accumulate, item) => {
-      const product = item.product;
-      return (
-        accumulate +
-        `<li class="row border-bottom border-secondary pb-4 pt-4">
+	let html = products.reduce((accumulate, item) => {
+		const product = item.product;
+		return (
+			accumulate +
+			`<li class="row border-bottom border-secondary pb-4 pt-4">
                 <div class="col-12 col-md-1 col-lg-1 d-flex justify-content-center align-items-center mb-3">
                     <form>
                         <input class="selectItem" data-item = ${JSON.stringify({
-                          laptop: {
-                            name_model: product.name_model.replaceAll(" ", "-"),
-                            cpu: product.cpu.replaceAll(" ", "-"),
-                            product_id: product._id,
-                            ram: product.ram,
-                            ssd: product.ssd,
-                            size: product.display.size,
-                            price: product.new_price,
-                          },
-                          purchaseItem: item._id,
-                        })} type="checkbox" style="width: 20px;
+													laptop: {
+														name_model: product.name_model.replaceAll(' ', '-'),
+														cpu: product.cpu.replaceAll(' ', '-'),
+														product_id: product._id,
+														ram: product.ram,
+														ssd: product.ssd,
+														size: product.display.size,
+														price: product.new_price,
+													},
+													purchaseItem: item._id,
+												})} type="checkbox" style="width: 20px;
                         height: 20px;">
                     </form>
                 </div> 
             
                 <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center align-items-center mb-3">
                     <img src="/laptop/${
-                      product.image[0]
-                    }" style="max-width: 200px; max-height: 200px">
+											product.image[0]
+										}" style="max-width: 200px; max-height: 200px">
                 </div>
                 <div class="col-12 col-md-8 col-lg-7 pl-5" x>
                     <p class="h5 font-weight-bold mt-0 mb-1">
                         ${product.name_model} (${product.cpu} | ${
-          product.ram
-        } GB | ${product.ssd} GB | ${product.display.size} inches | ${
-          product.operating_system
-        } | ${product.color}) 
+				product.ram
+			} GB | ${product.ssd} GB | ${product.display.size} inches | ${
+				product.operating_system
+			} | ${product.color}) 
                     </p>
                     <span class="small">Bảo hành 24 tháng chính hãng, Pin và sạc bảo hành 12 tháng, Đổi mới trong 15 ngày nếu có lỗi do nhà sản xuất</span>
                     <br>
@@ -68,49 +68,52 @@ const render = () => {
 
                         <div>
                             <span class="line-through text-secondary">
-                                ${product.price.toLocaleString("en-US")}
+                                ${product.price.toLocaleString('en-US')}
                             </span>
                             <span>đ</span>
                             <br>
                             <span class="productCost text-secondary">
-                                ${product.new_price.toLocaleString("en-US")}
+                                ${product.new_price.toLocaleString('en-US')}
                             </span>
                             <span>đ</span>
                             <br>
                             <span class="text-danger font-weight-bold">Tổng: </span>
                             <span class="cost">${product.new_price.toLocaleString(
-                              "en-US"
-                            )}</span>
+															'en-US',
+														)}</span>
                         </div>
                         <div class="btn-toolbar mt-2" role="toolbar" aria-label="Toolbar with button groups">
                             <div class="btn-group mr-2" role="group" aria-label="First group">
                             <button class="border border-secondary btn btn-light decreaseBtn" data-item = ${
-                              item._id
-                            } type="button">-</button>
-                            <button class="quantity border border-secondary btn btn-white" type="button">1</button>
+															item._id
+														} type="button">-</button>
+                            <button class="quantity border border-secondary btn btn-white" type="button">${
+															item.quantity
+														}</button>
                             <button class="border border-secondary btn btn-light increaseBtn" data-item = ${
-                              item._id
-                            } type="button">+</button>
+															item._id
+														} type="button">+</button>
                             </div>
                         </div>
                         <button class="deleteBtn btn btn-danger btn-sm mt-3" type="button" data-item = ${
-                          item._id
-                        } data-user = "${
-          user === null ? null : user._id
-        }" data-item = "${product._id}">Xóa</button>
+													item._id
+												} data-user = "${
+				user === null ? null : user._id
+			}" data-item = "${product._id}">Xóa</button>
                     </div>
                 </div>
             </li>`
-      );
-    }, "");
-    list.innerHTML = html;
-    let cost = products.reduce((acc, cur) => acc + cur.new_price, 0);
-    totalCost.forEach((el) => {
-        el.innerText = cost.toLocaleString('en-US');
-    });
+		);
+	}, '');
+	list.innerHTML = html;
+	let cost = products.reduce((acc, cur) => acc + cur.new_price, 0);
+	totalCost.forEach((el) => {
+		el.innerText = cost.toLocaleString('en-US');
+	});
 };
 if (products === null) {
-    products = [];
+	products = [];
 }
 products = products.filter((el) => el !== null);
+console.log(products);
 render();
