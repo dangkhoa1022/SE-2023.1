@@ -20,6 +20,7 @@ const render = () => {
 														ssd: product.ssd,
 														size: product.display.size,
 														price: product.new_price,
+														image: product.image,
 													},
 													purchaseItem: item._id,
 												})} type="checkbox" style="width: 20px;
@@ -115,5 +116,4 @@ if (products === null) {
 	products = [];
 }
 products = products.filter((el) => el !== null);
-console.log(products);
 render();

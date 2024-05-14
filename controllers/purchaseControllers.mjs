@@ -3,6 +3,7 @@ import catchAsync from '../ultils/catchAsync.mjs';
 import Stripe from 'stripe';
 import PurchaseItem from '../models/purchaseItemModel.mjs';
 import Cart from '../models/cartModel.mjs';
+import Order from '../models/orderModel.mjs';
 
 const addItemToCart = catchAsync(async (req, res, next) => {
 	const { userId, itemId } = req.body;
@@ -36,11 +37,22 @@ const addItemToCart = catchAsync(async (req, res, next) => {
 	});
 });
 const deleteItemInCart = catchAsync(async (req, res, next) => {
-	const { deletedIds } = req.body;
-	const promises = deletedIds.map(async (id) => {
-		return await PurchaseItem.findByIdAndDelete(id);
-	});
-	await Promise.all(promises);
+	const { deletedIds, cartId } = req.body;
+	if (cartId) {
+		const cart = await Cart.findById(cartId);
+		console.log(cart.items.map((item) => item._id));
+		console.log(deletedIds);
+		cart.items = cart.items.filter(
+			(item) => !deletedIds.includes(item._id.toString()),
+		);
+		cart.save();
+		console.log(cart.items.length);
+	} else {
+		const promises = deletedIds.map(async (id) => {
+			return await PurchaseItem.findByIdAndDelete(id);
+		});
+		await Promise.all(promises);
+	}
 	res.status(200).json({
 		status: 'success',
 	});
@@ -95,4 +107,22 @@ const updateCart = catchAsync(async (req, res, next) => {
 	});
 });
 
-export { checkOutSession, deleteItemInCart, addItemToCart, updateCart };
+const createOrder = catchAsync(async (req, res, next) => {
+	console.log(req.body);
+	const newOrder = new Order({
+		...req.body,
+		userId: req.user._id,
+	});
+	await newOrder.save();
+	res.status(201).json({
+		status: 'success',
+	});
+});
+
+export {
+	checkOutSession,
+	deleteItemInCart,
+	addItemToCart,
+	updateCart,
+	createOrder,
+};

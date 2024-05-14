@@ -56,7 +56,6 @@ decreaseBtns.forEach((btn) => {
 const deletePurchaseItem = [];
 deleteBtns.forEach((btn) => {
 	const itemId = btn.dataset.item;
-	const userId = btn.dataset.user;
 	btn.onclick = async () => {
 		btn.closest('li').style.display = 'none';
 		deletePurchaseItem.push(itemId);
@@ -68,6 +67,8 @@ deleteBtns.forEach((btn) => {
 		}
 	};
 });
+
+const purchaseBtn = document.querySelector('.purchase-btn');
 
 selectCheckboxs.forEach((checkbox) => {
 	checkbox.onchange = () => {
@@ -87,29 +88,15 @@ selectCheckboxs.forEach((checkbox) => {
 			});
 			calculateTotal();
 		}
+		if (seclectedPurchaseItems.length === 0) {
+			purchaseBtn.style.display = 'none';
+		} else {
+			purchaseBtn.style.display = 'block';
+		}
 	};
 });
 
 calculateTotal();
-
-const initialItems = {};
-JSON.parse(document.querySelector('ul').dataset.products).forEach((item) => {
-	initialItems[item.id] = JSON.parse(item.quantity);
-});
-
-const updatedItems = Array.from(document.querySelectorAll('div.btn-toolbar'))
-	.map((item) => {
-		let id = item.querySelector('.decreaseBtn').dataset.item;
-		let quantity = item.querySelector('.quantity').innerText;
-
-		return {
-			id,
-			quantity,
-		};
-	})
-	.filter((item) => {
-		return initialItems[item.id] !== item.quantity;
-	});
 
 window.onbeforeunload = function () {
 	fetch(`http://localhost:8000/api/cart/delete`, {
