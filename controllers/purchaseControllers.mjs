@@ -20,7 +20,7 @@ const addItemToCart = catchAsync(async (req, res, next) => {
 			status: 'success',
 		});
 	}
-	const products = cart.items.map((i) => i.product.toString());
+	const products = cart.items.map((i) => i.product._id.toString());
 	if (!products.includes(itemId)) {
 		let purchaseItem = new PurchaseItem({
 			quantity: 1,
@@ -119,10 +119,21 @@ const createOrder = catchAsync(async (req, res, next) => {
 	});
 });
 
+const updateOrder = catchAsync(async (req, res, next) => {
+	console.log(req.body);
+	await Order.findByIdAndUpdate(req.body.id, {
+		...req.body,
+	});
+	res.status(201).json({
+		status: 'success',
+	});
+});
+
 export {
 	checkOutSession,
 	deleteItemInCart,
 	addItemToCart,
 	updateCart,
 	createOrder,
+	updateOrder,
 };

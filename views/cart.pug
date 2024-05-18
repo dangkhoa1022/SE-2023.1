@@ -49,11 +49,11 @@ block content
 								.form-group
 									label(for='note') Lưu ý cho bên giao hàng
 									input.form-control(type='text' id='note')
-								fieldset.form-group.row
-									legend.col-form-label.col-sm-4.float-sm-left.pt-0 Phương thức thanh toán
+								.row
+									.col-form-label.col-sm-4.float-sm-left.pt-0 Phương thức thanh toán
 									.col-sm-8
 										.form-check
-											input.form-check-input(type='radio' name='gridRadios' id='gridRadios1' value='COD', checked)
+											input.form-check-input(type='radio' name='gridRadios' id='gridRadios1' value='COD')
 											label.form-check-label(for='gridRadios1') Thanh toán khi nhận hàng
 										.form-check
 											input.form-check-input(type='radio' name='gridRadios' id='gridRadios2' value='ONL')
@@ -63,7 +63,7 @@ block content
 
 						.modal-footer
 							button.btn.btn-secondary(type='button' data-dismiss='modal') Hủy
-							button.submit.btn.btn-primary(type='button') Xác nhận thông tin và thanh toán
+							button.submit.btn.btn-primary(type='button') Xác nhận đơn hàng
 
 
 block append script 

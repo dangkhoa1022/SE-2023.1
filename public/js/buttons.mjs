@@ -99,16 +99,6 @@ selectCheckboxs.forEach((checkbox) => {
 calculateTotal();
 
 window.onbeforeunload = function () {
-	fetch(`http://localhost:8000/api/cart/delete`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			deletedIds: deletePurchaseItem,
-		}),
-	});
-
 	const initialItems = {};
 	JSON.parse(document.querySelector('ul').dataset.products).forEach((item) => {
 		initialItems[item.id] = JSON.parse(item.quantity);
@@ -125,7 +115,10 @@ window.onbeforeunload = function () {
 			};
 		})
 		.filter((item) => {
-			return initialItems[item.id] !== item.quantity;
+			return (
+				initialItems[item.id] !== item.quantity &&
+				!deletePurchaseItem.includes(item.id)
+			);
 		});
 
 	fetch(`http://localhost:8000/api/cart/update`, {
@@ -135,6 +128,16 @@ window.onbeforeunload = function () {
 		},
 		body: JSON.stringify({
 			updatedItems,
+		}),
+	});
+
+	fetch(`http://localhost:8000/api/cart/delete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			deletedIds: deletePurchaseItem,
 		}),
 	});
 };

@@ -78,9 +78,13 @@ const receiverNameInput = document.getElementById('receiverName');
 const addressInput = document.getElementById('address');
 const phoneNumInput = document.getElementById('phoneNum');
 const noteInput = document.getElementById('note');
-const paymentMethodInput = document.querySelector(
-	`input[name="gridRadios"]:checked`,
+const paymentMethodInputs = document.querySelectorAll(
+	`input[name="gridRadios"]`,
 );
+
+paymentMethodInputs.onclick = (e) => {
+	e.checked = !e.checked;
+};
 
 const submitButton = document.querySelector('button.submit.btn.btn-primary');
 
@@ -89,6 +93,9 @@ submitButton.onclick = async () => {
 	const address = addressInput.value.trim();
 	const phone = phoneNumInput.value.trim();
 	const note = noteInput.value.trim() || '';
+	const paymentMethodInput = Array.from(paymentMethodInputs).find(
+		(input) => input.checked,
+	);
 	const paymentMethod = paymentMethodInput.value;
 	const deliveryData = {
 		receiverName,
@@ -106,6 +113,7 @@ submitButton.onclick = async () => {
 	}
 
 	const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
+	console.log('delete online');
 	fetch(`http://localhost:8000/api/cart/delete`, {
 		method: 'POST',
 		headers: {
@@ -163,18 +171,16 @@ const paymentWithCOD = async (deliveryData) => {
 
 const paymentWithStripe = async (deliveryData) => {
 	let totalCost = selectedItems.reduce((total, item) => {
-		console.log(item);
 		return total + item.laptop.price * parseInt(item.quantity);
 	}, 0);
 	if (totalCost >= 100000000) {
 		showAlert(
 			'warning',
-			'Không thể giao dịch với đơn hàng có giá trị lớn hơn 99,999,999 vnđ',
+			'Không thể giao dịch online với đơn hàng có giá trị lớn hơn 99,999,999 vnđ',
 		);
 		return;
 	}
-	buyBtn.textContent = 'Processing ...';
-	purchaseItems(totalCost);
+	await purchaseItems(totalCost);
 };
 
 const stripe = Stripe(

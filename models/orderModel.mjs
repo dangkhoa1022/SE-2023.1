@@ -20,6 +20,14 @@ const orderSchema = new Schema({
 		type: Date,
 		default: Date.now, // Set default value to current date
 	},
+	rejectedDay: {
+		type: Date,
+		require: false,
+	},
+	isRefund: {
+		type: Boolean,
+		require: false,
+	},
 	arrivedDay: {
 		type: Date,
 		default: function () {
@@ -50,12 +58,12 @@ const orderSchema = new Schema({
 	},
 	note: {
 		type: String,
-		default: 'No note',
+		default: 'Không có',
 	},
 	orderStatus: {
 		type: String,
 		required: true,
-		default: 'Pending',
+		default: 'pending',
 	},
 	deliveryFee: {
 		type: Number,
