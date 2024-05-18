@@ -5,6 +5,7 @@ import Store from '../models/storeModel.mjs';
 import apiFeatures from '../ultils/APIFeatures.mjs';
 import User from '../models/userModel.mjs';
 import Cart from '../models/cartModel.mjs';
+import Order from '../models/orderModel.mjs';
 const getOverview = catchAsync(async (req, res) => {
 	//EXECUTE QUERY
 	if (!req.query.limit) req.query.limit = 16;
@@ -69,7 +70,17 @@ const getMyCart = catchAsync(async (req, res) => {
 	});
 });
 
+const getMyOrder = catchAsync(async (req, res) => {
+	let orders = await Order.find({ userId: req.user._id });
+
+	res.status(200).render('order', {
+		title: 'My order',
+		orders,
+	});
+});
+
 export {
+	getMyOrder,
 	getOverview,
 	getProduct,
 	getLoginForm,

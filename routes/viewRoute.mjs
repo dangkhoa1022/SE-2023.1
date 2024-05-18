@@ -1,21 +1,23 @@
 import express from 'express';
 import {
-    getLoginForm,
-    getOverview,
-    getProduct,
-    getSignupForm,
-    getMyCart,
-    changePassword,
+	getLoginForm,
+	getOverview,
+	getProduct,
+	getSignupForm,
+	getMyCart,
+	changePassword,
+	getMyOrder,
 } from '../controllers/viewControllers.mjs';
 import {
-    isLoggedIn,
-    protect,
+	isLoggedIn,
+	protect,
 } from '../controllers/authiencationControllers.mjs';
 const Router = express.Router();
 Router.get('/login', getLoginForm);
 Router.get('/signup', getSignupForm);
 Router.use(isLoggedIn);
 Router.get('/mycart', getMyCart);
+Router.get('/myorder', getMyOrder);
 Router.get('/changePassword', protect, changePassword);
 Router.get('/:slug', getProduct);
 Router.route('/').get(getOverview);

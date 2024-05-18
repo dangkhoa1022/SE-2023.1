@@ -1,0 +1,104 @@
+extend base
+
+
+block content
+	.bg-light
+		.container.bg-white.p-5
+			h3 Đơn hàng của bạn 
+			nav
+				.nav.nav-tabs.nav-justified(id="nav-tab" role="tablist")
+					button.nav-link.active(
+						id="nav-home-tab" 
+						data-toggle="tab" 
+						data-target="#nav-home" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-home" 
+						aria-selected="true"
+					) Chờ chuẩn bị hàng
+					button.nav-link(
+						id="nav-profile-tab" 
+						data-toggle="tab" 
+						data-target="#nav-profile" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-profile" 
+						aria-selected="false"
+					) Đang giao
+					button.nav-link(
+						id="nav-contact-tab" 
+						data-toggle="tab" 
+						data-target="#nav-contact" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-contact" 
+						aria-selected="false"
+					) Nhận thành công
+
+					button.nav-link(
+						id="nav-contact-tab" 
+						data-toggle="tab" 
+						data-target="#nav-reject" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-reject" 
+						aria-selected="false"
+					) Đã hủy
+
+				.tab-content(id="nav-tabContent")(data-orders = `${JSON.stringify(orders) }`)
+					.tab-pane.fade.show.active(
+						id="nav-home" 
+						role="tabpanel" 
+						aria-labelledby="nav-home-tab"
+					) 
+						ul#pending-order.list-unstyled(data-status='pending')
+
+					.tab-pane.fade(
+						id="nav-profile" 
+						role="tabpanel" 
+						aria-labelledby="nav-profile-tab"
+					) 
+						ul#delivering-order.list-unstyled(data-status='delivering')
+
+					.tab-pane.fade(
+						id="nav-contact" 
+						role="tabpanel" 
+						aria-labelledby="nav-contact-tab"
+					) 
+						ul#success-order.list-unstyled(data-status='success')
+
+					.tab-pane.fade(
+						id="nav-reject" 
+						role="tabpanel" 
+						aria-labelledby="nav-reject-tab"
+					) 
+						ul#rejected-order.list-unstyled(data-status='rejected')
+			.modal.fade#staticBackdrop(data-backdrop='static' data-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+				.modal-dialog.modal-dialog-scrollable
+					.modal-content
+						.modal-header.bg-primary
+							h5.modal-title#staticBackdropLabel.text-white.font-weight-bold Xác nhận hủy đơn
+							button.close(type='button' data-dismiss='modal' aria-label='Close')
+								span.text-white(aria-hidden='true') &times;
+						.modal-body
+							form
+								.form-group
+									label(for='delete-note') Lý do
+									input.form-control(type='text' id='delete-note' aria-describedby='emailHelp' required)
+
+						.modal-footer
+							button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng
+							button.confirm-delete-btn.btn.btn-primary(type='button') Xác nhận hủy đơn hàng
+
+
+
+
+
+
+
+block append script 
+	script(src="js/orderRender.js") 
+
+
+
+
