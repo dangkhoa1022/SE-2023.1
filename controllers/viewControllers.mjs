@@ -6,7 +6,6 @@ import apiFeatures from '../ultils/APIFeatures.mjs';
 import User from '../models/userModel.mjs';
 import Cart from '../models/cartModel.mjs';
 import Order from '../models/orderModel.mjs';
-import * as productControllers from './productControllers.mjs';
 const getOverview = catchAsync(async (req, res) => {
 	//EXECUTE QUERY
 	if (!req.query.limit) req.query.limit = 16;
@@ -106,4 +105,6 @@ export {
     changePassword,
     getSignupForm,
     getMyCart,
+    getManageProduct,
+    getMyOrder
 };
