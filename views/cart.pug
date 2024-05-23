@@ -2,35 +2,76 @@ extend base
 
 
 block content
-    .bg-light
-        .container.bg-white.p-5
-            h3 Giỏ hàng của bạn 
-            p.pb-3.border-bottom.border-secondary
-                span.text-danger.font-weight-bold Liên hệ nhân viên trước khi chuyển tiền mua hàng.
-                br
-                span.text-danger.font-weight-bold Để đặt hàng, 
-                span quý khách vui lòng kiểm tra sản phẩm, số lượng, giá, màu sắc và điền các thông tin dưới đây:
-            ul.list-unstyled(data-products = `${JSON.stringify(products) }` data-user = `${JSON.stringify(user || null)}`)
-                
-            p.text-right
-                span Phí vận chuyển: 0đ
-                br 
-                span Phí Thu Hộ: 0đ
-                br 
-                span.text-danger.font-weight-bold Tổng cộng: 
-                span.totalCost 
-                span d
-                br 
-                span.text-danger.font-weight-bold Thanh Toán:  
-                span.totalCost 
-                span d
-                br
-                button.mt-3.btn.btn-primary.btn-lg.buy-btn.purchase-btn(type='button' data-user = `${JSON.stringify(user === null? null : user)}`) ĐẶT HÀNG
-                            
+	.bg-light
+		.container.bg-white.p-5
+			- let products = cart.items
+			h3(data-cartid= `${JSON.stringify(cart._id)}`) Giỏ hàng của bạn 
+			p.pb-3.border-bottom.border-secondary
+				span.text-danger.font-weight-bold Liên hệ nhân viên trước khi chuyển tiền mua hàng.
+				br
+				span.text-danger.font-weight-bold Để đặt hàng, 
+				span quý khách vui lòng kiểm tra sản phẩm, số lượng, giá, màu sắc và điền các thông tin dưới đây:
+			ul.list-unstyled(data-products = `${JSON.stringify(products) }` data-user = `${JSON.stringify(user || null)}`)
+
+
+			p.text-right
+				span.text-danger.font-weight-bold Tổng cộng: 
+				span.totalCost 0
+				span vnđ
+				br 
+			.d-flex.justify-content-end
+				button.text-right.btn.btn-primary.purchase-btn(type='button' data-toggle='modal' data-target='#staticBackdrop' style='display:none;') Đặt hàng
+
+			.modal.fade#staticBackdrop(data-backdrop='static' data-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+				.modal-dialog.modal-dialog-scrollable(style='min-width: min(700px, 80%)')
+					.modal-content
+						.modal-header.bg-primary
+							h5.modal-title#staticBackdropLabel.text-white.font-weight-bold Thông tin đơn hàng
+							button.close(type='button' data-dismiss='modal' aria-label='Close')
+								span.text-white(aria-hidden='true') &times;
+						.modal-body
+							h5.font-weight-bold Sản phẩm
+							ul.list-unstyled.purchaseItemsList
+							h5.font-weight-bold Thông tin giao hàng
+							form
+								.form-group
+									label(for='receiverName') Tên người nhận
+									input.form-control(type='text' id='receiverName' aria-describedby='emailHelp' required)
+									.err-msg.text-danger(style="display:none") Chưa có tên người nhận hoặc tên không hợp lệ
+								.form-group
+									label(for='address') Địa chỉ
+									input.form-control(type='text' id='address' required)
+									.err-msg.text-danger(style="display:none") Chưa có địa chỉ hoặc địa chỉ không hợp lệ
+								.form-group
+									label(for='phoneNum') Số điện thoại
+									input.form-control(type='text' id='phoneNum' required)
+									.err-msg.text-danger(style="display:none") Chưa có số điện thoại hoặc số điện thoại không hợp lệ
+								.form-group
+									label(for='note') Lưu ý cho bên giao hàng
+									input.form-control(type='text' id='note')
+								.row
+									.col-form-label.col-sm-4.float-sm-left.pt-0 Phương thức thanh toán
+									.col-sm-8
+										.form-check
+											input.form-check-input(type='radio' name='gridRadios' id='gridRadios1' value='COD')
+											label.form-check-label(for='gridRadios1') Thanh toán khi nhận hàng
+										.form-check
+											input.form-check-input(type='radio' name='gridRadios' id='gridRadios2' value='ONL')
+											label.form-check-label(for='gridRadios2') Thanh toán Online với Stripe
+
+
+
+						.modal-footer
+							button.btn.btn-secondary(type='button' data-dismiss='modal') Hủy
+							button.submit.btn.btn-primary(type='button') Xác nhận đơn hàng
+
 
 block append script 
-    script(src="js/cartRender.mjs") 
-    script(src="js/buttons.mjs") 
-    script(type="text/javascript" src="https://js.stripe.com/v3/")
-    script(src="js/stripe.mjs") 
+	script(src="js/cartRender.mjs") 
+	script(src="js/buttons.mjs") 
+	script(type="text/javascript" src="https://js.stripe.com/v3/")
+	script(src="js/stripe.mjs") 
+	script(src="js/validateForm.mjs") 
+
+
 

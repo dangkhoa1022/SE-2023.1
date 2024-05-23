@@ -7,11 +7,12 @@ import {
     getMyCart,
     changePassword,
     getManageProduct,
+    getMyOrder
 } from '../controllers/viewControllers.mjs';
 import {
     isLoggedIn,
     protect,
-    adminOnly,
+    adminOnly
 } from '../controllers/authiencationControllers.mjs';
 
 const Router = express.Router();
@@ -19,6 +20,7 @@ Router.get('/login', getLoginForm);
 Router.get('/signup', getSignupForm);
 Router.use(isLoggedIn);
 Router.get('/mycart', getMyCart);
+Router.get('/myorder', getMyOrder);
 Router.get('/changePassword', protect, changePassword);
 Router.get('/manage', adminOnly, getManageProduct);
 Router.get('/:slug', getProduct);

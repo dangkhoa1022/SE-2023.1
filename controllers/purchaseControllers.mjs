@@ -1,67 +1,139 @@
 import User from '../models/userModel.mjs';
-import Product from '../models/productModel.mjs';
 import catchAsync from '../ultils/catchAsync.mjs';
-import { updateOne, getAll, getOne } from './handleFactory.mjs';
 import Stripe from 'stripe';
+import PurchaseItem from '../models/purchaseItemModel.mjs';
+import Cart from '../models/cartModel.mjs';
+import Order from '../models/orderModel.mjs';
 
-const purchaseItem = catchAsync(async (req, res, next) => {
-    const { userId, itemId } = req.body;
-    const user = await User.findById(userId).select('+items');
-    if (!user.items.includes(itemId)) {
-        user.items.push(itemId);
-        await user.save({ validateBeforeSave: false });
-    }
-    res.status(200).json({
-        status: 'success',
-    });
+const addItemToCart = catchAsync(async (req, res, next) => {
+	const { userId, itemId } = req.body;
+	let cart = await Cart.findOne({
+		userId,
+	}).populate('items');
+	if (!cart) {
+		cart = new Cart({
+			userId,
+			items: [itemId],
+		});
+		await cart.save();
+		return res.status(200).json({
+			status: 'success',
+		});
+	}
+	const products = cart.items.map((i) => i.product._id.toString());
+	if (!products.includes(itemId)) {
+		let purchaseItem = new PurchaseItem({
+			quantity: 1,
+			product: itemId,
+		});
+		purchaseItem = await purchaseItem.save();
+
+		cart.items.push(purchaseItem.id);
+		await cart.save();
+	}
+
+	res.status(200).json({
+		status: 'success',
+	});
 });
-const deletePurchase = catchAsync(async (req, res, next) => {
-    const { userId, itemId } = req.body;
-    const user = await User.findById(userId).select('+items');
-    if (user.items.includes(itemId)) {
-        const indexToRemove = user.items.indexOf(itemId);
-        if (indexToRemove !== -1) {
-            user.items.splice(indexToRemove, 1);
-        }
-        await user.save({ validateBeforeSave: false });
-    }
-    res.status(200).json({
-        status: 'success',
-    });
+const deleteItemInCart = catchAsync(async (req, res, next) => {
+	const { deletedIds, cartId } = req.body;
+	if (cartId) {
+		const cart = await Cart.findById(cartId);
+		console.log(cart.items.map((item) => item._id));
+		console.log(deletedIds);
+		cart.items = cart.items.filter(
+			(item) => !deletedIds.includes(item._id.toString()),
+		);
+		cart.save();
+		console.log(cart.items.length);
+	} else {
+		const promises = deletedIds.map(async (id) => {
+			return await PurchaseItem.findByIdAndDelete(id);
+		});
+		await Promise.all(promises);
+	}
+	res.status(200).json({
+		status: 'success',
+	});
 });
 const stripe = new Stripe(
-    'sk_test_51MpCA0DfcEM9cIAm0SlXbB7WjZpXe7HEwSwCAjde0FZoLndTIYUnHJsp5F5HEcyEUpCy9zJiU2OIIFRf2t5KNnXx00PnlNRkfx'
+	'sk_test_51MpCA0DfcEM9cIAm0SlXbB7WjZpXe7HEwSwCAjde0FZoLndTIYUnHJsp5F5HEcyEUpCy9zJiU2OIIFRf2t5KNnXx00PnlNRkfx',
 );
 const checkOutSession = catchAsync(async (req, res) => {
-    const price = req.params.total;
-    //2. Create checkout session
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        success_url: `${req.protocol}://${req.get('host')}/`,
-        cancel_url: `${req.protocol}://${req.get('host')}/mycart`,
-        line_items: [
-            {
-                price_data: {
-                    currency: 'vnd',
-                    unit_amount: price,
-                    product_data: {
-                        name: `Thanh toán giỏ hàng`,
+	const price = req.params.total;
+	//2. Create checkout session
+	const session = await stripe.checkout.sessions.create({
+		payment_method_types: ['card'],
+		success_url: `${req.protocol}://${req.get('host')}/`,
+		cancel_url: `${req.protocol}://${req.get('host')}/mycart`,
+		line_items: [
+			{
+				price_data: {
+					currency: 'vnd',
+					unit_amount: price,
+					product_data: {
+						name: `Thanh toán giỏ hàng`,
 
-                        images: [
-                            `${req.protocol}://${req.get('host')}/purchase.jpg`,
-                        ],
-                    },
-                },
-                quantity: 1,
-            },
-        ],
-        mode: 'payment',
-    });
-    //3. Create session as response
-    res.status(201).json({
-        status: 'success',
-        session,
-    });
+						images: [`${req.protocol}://${req.get('host')}/purchase.jpg`],
+					},
+				},
+				quantity: 1,
+			},
+		],
+		mode: 'payment',
+	});
+	//3. Create session as response
+	res.status(201).json({
+		status: 'success',
+		session,
+	});
 });
 
-export { checkOutSession, purchaseItem, deletePurchase };
+const updateCart = catchAsync(async (req, res, next) => {
+	const { updatedItems } = req.body;
+	console.log(updatedItems);
+	let promises = updatedItems.map(async (item) => {
+		return await PurchaseItem.findByIdAndUpdate(item.id, {
+			$set: {
+				quantity: parseInt(item.quantity),
+			},
+		});
+	});
+
+	await Promise.all(promises);
+	res.status(201).json({
+		status: 'success',
+	});
+});
+
+const createOrder = catchAsync(async (req, res, next) => {
+	console.log(req.body);
+	const newOrder = new Order({
+		...req.body,
+		userId: req.user._id,
+	});
+	await newOrder.save();
+	res.status(201).json({
+		status: 'success',
+	});
+});
+
+const updateOrder = catchAsync(async (req, res, next) => {
+	console.log(req.body);
+	await Order.findByIdAndUpdate(req.body.id, {
+		...req.body,
+	});
+	res.status(201).json({
+		status: 'success',
+	});
+});
+
+export {
+	checkOutSession,
+	deleteItemInCart,
+	addItemToCart,
+	updateCart,
+	createOrder,
+	updateOrder,
+};

@@ -1,23 +1,20 @@
 import express from 'express';
 import {
-    forgotPassword,
-    isLoggedIn,
-    login,
-    logout,
-    protect,
-    resetPassword,
-    signup,
-    updatePassword,
+	forgotPassword,
+	isLoggedIn,
+	login,
+	logout,
+	protect,
+	resetPassword,
+	signup,
+	updatePassword,
 } from '../controllers/authiencationControllers.mjs';
+import { addItemToCart } from '../controllers/purchaseControllers.mjs';
 import {
-    deletePurchase,
-    purchaseItem,
-} from '../controllers/purchaseControllers.mjs';
-import {
-    getAllUsers,
-    getMe,
-    getOneUser,
-    updateUser,
+	getAllUsers,
+	getMe,
+	getOneUser,
+	updateUser,
 } from '../controllers/userControllers.mjs';
 
 const Router = express.Router();
@@ -26,8 +23,7 @@ Router.route('/login').post(login);
 Router.route('/logout').post(logout);
 Router.route('/forgotPassword').post(forgotPassword);
 Router.route('/resetPassword/:token').patch(resetPassword);
-Router.route('/purchase').patch(isLoggedIn, purchaseItem);
-Router.route('/deletePurchase').patch(isLoggedIn, deletePurchase);
+Router.route('/purchase').patch(isLoggedIn, addItemToCart);
 
 Router.use(protect);
 Router.route('/updatePassword').patch(updatePassword);
