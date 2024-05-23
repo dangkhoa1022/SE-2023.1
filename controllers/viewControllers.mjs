@@ -3,6 +3,7 @@ import catchAsync from '../ultils/catchAsync.mjs';
 import appError from '../ultils/appError.mjs';
 import Store from '../models/storeModel.mjs';
 import apiFeatures from '../ultils/APIFeatures.mjs';
+import * as productControllers from './productControllers.mjs';
 const getOverview = catchAsync(async (req, res) => {
     //EXECUTE QUERY
     if (!req.query.limit) req.query.limit = 16;
@@ -24,11 +25,30 @@ const getOverview = catchAsync(async (req, res) => {
 });
 const getProduct = catchAsync(async (req, res, next) => {
     const product = await Product.findOne({ slug: req.params.slug });
-    if (!product) next(new appError('There is no product with that name', 404));
+    if (!product) return next(new appError('There is no product with that name', 404));
 
     res.status(200).render('product', {
         title: product.name,
         product,
+    });
+});
+
+const getManageProduct = catchAsync(async (req, res, next) => {
+    if (!req.query.limit) req.query.limit = 16;
+    const features = new apiFeatures(Product.find(), req.query)
+        .filter()
+        .sort()
+        .limit()
+        .paginate();
+    const laptops = await features.query;
+    const stores = await Store.find({});
+    const pageCurrent = req.query.page || 1;
+    res.status(200).render('manage', {
+        title: 'Manage storage',
+        laptops,
+        pageCurrent,
+        req,
+        stores,
     });
 });
 const getLoginForm = (req, res) => {
@@ -67,4 +87,5 @@ export {
     changePassword,
     getSignupForm,
     getMyCart,
+    getManageProduct
 };

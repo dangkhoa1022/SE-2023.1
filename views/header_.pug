@@ -61,8 +61,11 @@
                                         .dropdown-toggle(type='button' data-toggle='dropdown' aria-expanded='false')= user.name
                                             
                                         .dropdown-menu
-                                            a.dropdown-item(href='/changePassword') Thay đổi mật khẩu
-                                            a.dropdown-item(href='/mycart') Giỏ hàng
+                                            if user.role === 'admin'
+                                                a.dropdown-item(href='/manage') Quản lý sản phẩm
+                                            else
+                                                a.dropdown-item(href='/mycart') Giỏ hàng
+                                                a.dropdown-item(href='/my-profile') Thông tin tài khoản
                                             .dropdown-divider
                                             a.dropdown-item.logout-btn(href='#') Đăng xuất
                             else 
