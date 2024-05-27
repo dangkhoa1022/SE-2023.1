@@ -42,62 +42,49 @@ const getDetailOrder = (items, index) => {
 const getHtmlForItem = (item) => {
 	const product = item.product;
 	return `<div class="row">
-                <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
-                    <img src="/laptop/${
-											product.image[0]
-										}" style="max-width: 80px; max-height: 80px">
+            <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
+                <img src="/laptop/${
+                  product.image[0]
+                }" style="max-width: 80px; max-height: 80px">
+            </div>
+            <div class="col-12 col-md-8 col-lg-6 pl-1" x>
+                <p style = 'font-size: 15px'>
+                    ${product.name_model} 
+                    </br>
+                    (${product.cpu} | ${product.ram} GB | ${product.ssd} GB )
+                </p>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="text-right d-flex flex-column align-items-end justify-content-end">
+                <div>
+                    <span class="productCost text-secondary">
+                        ${product.price.toLocaleString('en-US')}đ x ${item.quantity}
+                    </span>
+                    <br>
                 </div>
-                <div class="col-12 col-md-8 col-lg-6 pl-1" x>
-                    <p style = 'font-size: 15px'>
-                        ${product.name_model} 
-                        </br>
-                        (${product.cpu} | ${product.ram} GB | ${product.ssd} GB )
-                    </p>
-                   
-                </div>
-                <div class="col-12 col-lg-4">
-                    <div class="text-right d-flex flex-column align-items-end justify-content-end">
-
-                        <div>
-                            <span class="productCost text-secondary">
-                                ${product.price.toLocaleString('en-US')}đ x ${
-		item.quantity
-	}
-                            </span>
-                            <br>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+              </div>
+            </div>
+          </div>`;
 };
 
 const getButton = (status, id) => {
-	if (status === 'pending') {
-		return `
-      <button 
-        type="button" 
-        class="mt-4 text-right btn btn-danger delete-btn" 
-        data-toggle="modal" 
-        data-target="#staticBackdrop" 
-        data-id = '${id}'
-       >
-        <i class="fa-solid fa-trash-can"></i> 
-        Hủy đơn hàng
-      </button>
-      `;
-
-	}
-
-	// if (status === 'delivering') {
-	// 	return `<a class='btn btn-primary mt-4 success-btn' onclick=`${updateOrder(successBtn.dataset.id, 'success')}` data-id='${id}>
-	//              <i class="fa-solid fa-circle-check"></i>
-	//               Nhận thành công
-	//           </a>`;
-	// }
-
-	return '';
+  // Use a ternary operator for a more concise approach
+  return status === 'pending' ? `
+    <button type="button" class="mt-4 text-right btn btn-primary accept-btn" data-id="${id}">
+      <i class="fa-solid fa-check"></i> Chấp nhận
+    </button>
+    <button 
+    type="button" class="mt-4 text-right btn btn-danger reject-btn" 
+    data-toggle="modal" 
+    data-target="#staticBackdrop" 
+    data-id = '${id}'>
+    <i class="fa-solid fa-trash-can"></i> 
+    Từ chối
+  </button>
+  ` : '';
 };
+
+
 
 const render = () => {
 	const statuses = ['pending', 'success', 'delivering', 'rejected'];
@@ -222,11 +209,32 @@ const updateOrder = async (id, status, note) => {
 		},
 	});
 };
+const acceptBtns = document.querySelectorAll('.accept-btn');
+let acceptId='';
+acceptBtns.forEach((btn) => {
+	btn.onclick = async() => {
+		acceptId = btn.dataset.id;
+    console.log(acceptId);
+    await fetch(`http://localhost:8000/api/purchase/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderStatus: 'delivering',
+        id: acceptId,
+      }),
+    });
+    window.location.replace(`/manageOrder`);
+	};
+});
+
+
+
 
 let deleteId = '';
 
-const deleteBtns = document.querySelectorAll('.delete-btn');
-
+const deleteBtns = document.querySelectorAll('.reject-btn');
 deleteBtns.forEach((btn) => {
 	btn.onclick = () => {
 		deleteId = btn.dataset.id;
@@ -248,7 +256,6 @@ confirmDeleteBtn.onclick = async () => {
 			note,
 		}),
 	});
-
 	showAlert('success', 'Đã hủy đơn hàng thành công');
-	window.location.replace(`/myorder`);
+	window.location.replace(`/manageOrder`);
 };

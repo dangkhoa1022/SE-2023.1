@@ -7,6 +7,7 @@ import {
 	getMyCart,
 	changePassword,
 	getMyOrder,
+	manageOrder,
 } from '../controllers/viewControllers.mjs';
 import {
 	isLoggedIn,
@@ -19,6 +20,9 @@ Router.use(isLoggedIn);
 Router.get('/mycart', getMyCart);
 Router.get('/myorder', getMyOrder);
 Router.get('/changePassword', protect, changePassword);
-Router.get('/:slug', getProduct);
 Router.route('/').get(getOverview);
+Router.get('/manageOrder', manageOrder);
+Router.get('/:slug', getProduct);
+
+
 export default Router;

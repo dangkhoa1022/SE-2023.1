@@ -30,7 +30,7 @@ const getProduct = catchAsync(async (req, res, next) => {
 	if (!product) next(new appError('There is no product with that name', 404));
 
 	res.status(200).render('product', {
-		title: product.name,
+		title: product?.name_model,
 		product,
 	});
 });
@@ -49,6 +49,8 @@ const changePassword = (req, res) => {
 		title: 'My acount',
 	});
 };
+
+
 const getMyCart = catchAsync(async (req, res) => {
 	let cart;
 	if (req.user) {
@@ -72,12 +74,26 @@ const getMyCart = catchAsync(async (req, res) => {
 
 const getMyOrder = catchAsync(async (req, res) => {
 	let orders = await Order.find({ userId: req.user._id });
-
+	console.log(orders);
 	res.status(200).render('order', {
 		title: 'My order',
 		orders,
 	});
 });
+
+const manageOrder = catchAsync(async (req, res) => {
+	const orders = await Order.find({}); 
+	if (!orders) {
+		return res.status(404).json({ message: "No orders found." });
+	}
+	//console.log(orders)
+	res.status(200).render('manageOrder', {
+		title: 'All orders',
+		orders,
+	});
+  });
+  
+
 
 export {
 	getMyOrder,
@@ -87,4 +103,5 @@ export {
 	changePassword,
 	getSignupForm,
 	getMyCart,
+	manageOrder,
 };
