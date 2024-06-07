@@ -5,6 +5,7 @@ const purchaseUser = (itemId, userId) => async () => {
 		window.location.replace(`/login`);
 		return;
 	}
+	showAlert('success', 'Thêm vào giỏ thành công');
 	try {
 		const res = (
 			await axios({
@@ -16,9 +17,6 @@ const purchaseUser = (itemId, userId) => async () => {
 				},
 			})
 		).data;
-		if (res.status === 'success') {
-			showAlert('success', 'Thêm vào giỏ thành công');
-		}
 	} catch (error) {
 		console.log(error);
 	}

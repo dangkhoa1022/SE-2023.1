@@ -28,12 +28,7 @@
                             input.search_field.form-control(type="text" placeholder="Search" aria-label="Search")
                             div.input-group-append
                                 button.search-btn.btn.btn-outline-secondary.bg-light(type="button") Tìm kiếm
-                            //- ul.list-group.search-suggestion
-                            //-     li.list-group-item asd
-                            //-     li.list-group-item asd 
-                            //-     li.list-group-item asd
 
-                            //-     li.list-group-item asd
 
             .col-lg-3.col-2.col-xl-6.col-sm-4.align-self-center.text-white
                 .row.align-items-center
@@ -79,7 +74,10 @@
                     .col-12.col-xl-2.col-sm-3.col-lg-3
                         .row.align-items-center
                             .col-xl-4.col-sm-8
-                                a(href = `${user === null? "login":"/mycart" }` style = "text-decoration: none").text-white: i(class="fa-solid fa-cart-shopping" style="font-size: 30px")         
+                                a(href = `${user === null? "login":"/mycart" }` style = "text-decoration: none").text-white
+                                    .cart-icon-wrapper(style='position: relative; display: inline-block;')
+                                        i.fa-solid.fa-cart-shopping(style='font-size: 30px')
+                                        span.cart-count(style='position: absolute; top: -15px; right: -15px; background-color: #df4545; color: white; font-size: 12px; padding: 3px 10px; border-radius: 50%;') #{cart !== null ? cart.items.length : 0}
     .container-fluid.py-2
         .row.align-items-center.text-white
             .dropdown
