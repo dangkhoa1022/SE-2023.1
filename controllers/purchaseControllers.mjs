@@ -1,4 +1,3 @@
-import User from '../models/userModel.mjs';
 import catchAsync from '../ultils/catchAsync.mjs';
 import Stripe from 'stripe';
 import PurchaseItem from '../models/purchaseItemModel.mjs';
@@ -41,20 +40,18 @@ const deleteItemInCart = catchAsync(async (req, res, next) => {
 	const { deletedIds, cartId } = req.body;
 	if (cartId) {
 		const cart = await Cart.findById(cartId);
-		console.log(cart.items.map((item) => item._id));
 		console.log(deletedIds);
 		cart.items = cart.items.filter(
 			(item) => !deletedIds.includes(item._id.toString()),
 		);
 		cart.save();
-		console.log(cart.items.length);
 	} else {
 		const promises = deletedIds.map(async (id) => {
 			return await PurchaseItem.findByIdAndDelete(id);
 		});
 		await Promise.all(promises);
 	}
-	res.redirect('/mycart').status(200).json({
+	res.status(200).json({
 		status: 'success',
 	});
 });
@@ -95,7 +92,6 @@ const checkOutSession = catchAsync(async (req, res) => {
 
 const updateCart = catchAsync(async (req, res, next) => {
 	const { updatedItems } = req.body;
-	console.log(updatedItems);
 	let promises = updatedItems.map(async (item) => {
 		return await PurchaseItem.findByIdAndUpdate(item.id, {
 			$set: {

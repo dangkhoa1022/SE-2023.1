@@ -82,6 +82,8 @@ const paymentMethodInputs = document.querySelectorAll(
 	`input[name="gridRadios"]`,
 );
 
+paymentMethodInputs[0].checked = true;
+
 paymentMethodInputs.forEach(
 	(input) =>
 		(input.onclick = (e) => {
@@ -100,15 +102,15 @@ submitButton.onclick = async () => {
 		const paymentMethodInput = Array.from(paymentMethodInputs).find(
 			(input) => input.checked,
 		);
+		if (validateInput()) return;
 		const paymentMethod = paymentMethodInput.value;
 		const deliveryData = {
 			receiverName,
 			address,
 			phone,
 			note,
-			paymentMethod,
+			paymentMethod: paymentMethod || 'COD',
 		};
-		if (validateInput()) return;
 
 		const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
 		const deletedIds = selectedItems.map((item) => item.purchaseItem);
@@ -122,6 +124,7 @@ submitButton.onclick = async () => {
 		window.location.replace('/myorder');
 	} catch (err) {
 		console.log(err);
+		showAlert('error', err.message);
 	}
 };
 
@@ -132,14 +135,25 @@ const validateInput = () => {
 		const value = input.querySelector('input').value.trim();
 		const msg = input.querySelector('.err-msg');
 		if (!msg) return;
-		if (value === '') {
-			invalid = true;
-			msg.style.display = 'block';
+		const inputId = input.querySelector('input').getAttribute('id');
+
+		if (inputId === 'phoneNum') {
+			const phoneRegex = /^0\d{9}$/;
+			if (!phoneRegex.test(value)) {
+				invalid = true;
+				msg.style.display = 'block';
+			} else {
+				msg.style.display = 'none';
+			}
 		} else {
-			msg.style.display = 'none';
+			if (value === '') {
+				invalid = true;
+				msg.style.display = 'block';
+			} else {
+				msg.style.display = 'none';
+			}
 		}
 	});
-	console.log('invalid', invalid);
 	return invalid;
 };
 

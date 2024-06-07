@@ -98,7 +98,7 @@ selectCheckboxs.forEach((checkbox) => {
 
 calculateTotal();
 
-window.onbeforeunload = function () {
+window.onunload = function () {
 	const initialItems = {};
 	JSON.parse(document.querySelector('ul').dataset.products).forEach((item) => {
 		initialItems[item.id] = JSON.parse(item.quantity);
