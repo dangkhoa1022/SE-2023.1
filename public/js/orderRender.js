@@ -144,6 +144,7 @@ const renderList = (status) => {
 		return;
 	}
 	let html = filterOrder.reduce((accumulate, order, index) => {
+		console.log(order);
 		return (
 			accumulate +
 			`<li class="row border-bottom border-secondary pb-1 pt-4">

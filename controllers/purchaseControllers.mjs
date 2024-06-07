@@ -36,6 +36,7 @@ const addItemToCart = catchAsync(async (req, res, next) => {
 		status: 'success',
 	});
 });
+
 const deleteItemInCart = catchAsync(async (req, res, next) => {
 	const { deletedIds, cartId } = req.body;
 	if (cartId) {
@@ -53,7 +54,7 @@ const deleteItemInCart = catchAsync(async (req, res, next) => {
 		});
 		await Promise.all(promises);
 	}
-	res.status(200).json({
+	res.redirect('/mycart').status(200).json({
 		status: 'success',
 	});
 });
@@ -65,7 +66,9 @@ const checkOutSession = catchAsync(async (req, res) => {
 	//2. Create checkout session
 	const session = await stripe.checkout.sessions.create({
 		payment_method_types: ['card'],
-		success_url: `${req.protocol}://${req.get('host')}/`,
+		success_url: `${req.protocol}://${req.get(
+			'host',
+		)}/api/purchase/create-stripe?query=${req.query.query}`,
 		cancel_url: `${req.protocol}://${req.get('host')}/mycart`,
 		line_items: [
 			{
@@ -114,9 +117,30 @@ const createOrder = catchAsync(async (req, res, next) => {
 		userId: req.user._id,
 	});
 	await newOrder.save();
-	res.status(201).json({
-		status: 'success',
+	res.status(201).redirect('/myorder');
+});
+
+const createOrderStripe = catchAsync(async (req, res, next) => {
+	console.log(req.query);
+	let body = JSON.parse(req.query.query);
+
+	const deletedIds = body.items;
+
+	const cart = await Cart.findOne({
+		userId: req.user._id,
 	});
+	cart.items = cart.items.filter(
+		(item) => !deletedIds.includes(item._id.toString()),
+	);
+	cart.save();
+
+	const newOrder = new Order({
+		...body,
+		userId: req.user._id,
+		paid: true,
+	});
+	await newOrder.save();
+	res.status(201).redirect('/myorder');
 });
 
 const updateOrder = catchAsync(async (req, res, next) => {
@@ -136,4 +160,5 @@ export {
 	updateCart,
 	createOrder,
 	updateOrder,
+	createOrderStripe,
 };

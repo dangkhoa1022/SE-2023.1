@@ -110,26 +110,16 @@ submitButton.onclick = async () => {
 		};
 		if (validateInput()) return;
 
+		const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
+		const deletedIds = selectedItems.map((item) => item.purchaseItem);
 		if (paymentMethod === 'COD') {
 			await paymentWithCOD(deliveryData);
+			emptyCart(cartId, deletedIds);
 		} else {
-			await paymentWithStripe(deliveryData);
+			await paymentWithStripe(deliveryData, cartId, deletedIds);
 		}
 
 		window.location.replace('/myorder');
-
-		const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
-		console.log('delete online');
-		fetch(`http://localhost:8000/api/cart/delete`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				cartId,
-				deletedIds: selectedItems.map((item) => item.purchaseItem),
-			}),
-		});
 	} catch (err) {
 		console.log(err);
 	}
@@ -179,7 +169,7 @@ const paymentWithCOD = async (deliveryData) => {
 	});
 };
 
-const paymentWithStripe = async (deliveryData) => {
+const paymentWithStripe = async (deliveryData, cartId, deletedIds) => {
 	let totalCost = selectedItems.reduce((total, item) => {
 		return total + item.laptop.price * parseInt(item.quantity);
 	}, 0);
@@ -190,17 +180,27 @@ const paymentWithStripe = async (deliveryData) => {
 		);
 		return;
 	}
-	await purchaseItems(totalCost);
+	await purchaseItems(totalCost, deliveryData);
 };
 
 const stripe = Stripe(
 	'pk_test_51MpCA0DfcEM9cIAmWGiqdhqfCoGX8bIXqDW2miaXFhARb39RzUhokPTAZ6KNPkNfzmY6OiBjN7xzpcXolzo1KclG00YIVSUyC6',
 );
 
-const purchaseItems = async (total) => {
+const purchaseItems = async (total, deliveryData) => {
+	let query = JSON.stringify({
+		...deliveryData,
+		items: selectedItems.map((item) => item.purchaseItem),
+		totalPrice: selectedItems.reduce((total, item) => {
+			console.log(item);
+			return total + item.laptop.price * parseInt(item.quantity);
+		}, 0),
+	});
 	try {
 		//1. Get checkout session from API
-		const session = await axios(`/api/purchase/checkout-session/${total}`);
+		const session = await axios(
+			`/api/purchase/checkout-session/${total}?query=${query}`,
+		);
 		//2. Create checkout form + charge credit card
 		stripe.redirectToCheckout({
 			sessionId: session.data.session.id,
@@ -209,4 +209,17 @@ const purchaseItems = async (total) => {
 		showAlert('error', error);
 		throw error;
 	}
+};
+
+const emptyCart = async (cartId, deletedIds) => {
+	fetch(`http://localhost:8000/api/cart/delete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			cartId,
+			deletedIds,
+		}),
+	});
 };
