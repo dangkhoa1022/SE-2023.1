@@ -89,14 +89,41 @@ const getButton = (status, id) => {
 
 	}
 
-	// if (status === 'delivering') {
-	// 	return `<a class='btn btn-primary mt-4 success-btn' onclick=`${updateOrder(successBtn.dataset.id, 'success')}` data-id='${id}>
-	//              <i class="fa-solid fa-circle-check"></i>
-	//               Nhận thành công
-	//           </a>`;
-	// }
+	if (status === 'delivering') {
+		return `
+      <button 
+        type="button" 
+        data-toggle="modal" 
+        data-id = '${id}'
+        data-target="#staticBackdrop2" 
+        class="mt-4 text-right btn btn-success receive-btn" 
+       >
+        <i class="fa-solid fa-trash-can"></i> 
+        Đã nhận hàng
+      </button>
+    `;
+	}
 
 	return '';
+};
+
+const updateOrder = async (id, orderStatus, note) => {
+	fetch(`http://localhost:8000/api/purchase/update`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: {
+			orderStatus,
+			id,
+			note,
+		},
+	});
+
+	console.log(orders);
+	orders.forEach((order) => {
+		if (order._id === id) order.orderStatus = orderStatus;
+	});
 };
 
 const render = () => {
@@ -155,10 +182,10 @@ const renderList = (status) => {
                         </span>
                       </div>
                       <div>
-                          <span class="font-weight-bold">Phương thức thanh toán: 
+                          <span class="font-weight-bold">Phương thức TT: 
                           </span>
                           <span >${order.paymentMethod}</span>
-                          <span class="font-weight-bold">Phí vận chuyển: </span>
+                          <span class="font-weight-bold">Phí ship: </span>
                           <span class="productCost">
                               ${order.deliveryFee.toLocaleString('en-US')}
                           </span>
@@ -209,27 +236,22 @@ const getStatus = (status) => {
 
 render();
 
-const updateOrder = async (id, status, note) => {
-	fetch(`http://localhost:8000/api/purchase/update`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: {
-			orderStatus,
-			id,
-			note,
-		},
-	});
-};
-
 let deleteId = '';
+let receiveId = '';
 
 const deleteBtns = document.querySelectorAll('.delete-btn');
 
 deleteBtns.forEach((btn) => {
 	btn.onclick = () => {
 		deleteId = btn.dataset.id;
+	};
+});
+
+const receiveBtns = document.querySelectorAll('.receive-btn');
+
+receiveBtns.forEach((btn) => {
+	btn.onclick = () => {
+		receiveId = btn.dataset.id;
 	};
 });
 
@@ -250,5 +272,23 @@ confirmDeleteBtn.onclick = async () => {
 	});
 
 	showAlert('success', 'Đã hủy đơn hàng thành công');
+	window.location.replace(`/myorder`);
+};
+
+const confirmReceiveBtn = document.querySelector('.confirm-receive-btn');
+
+confirmReceiveBtn.onclick = async () => {
+	await fetch(`http://localhost:8000/api/purchase/update`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			orderStatus: 'success',
+			id: receiveId,
+		}),
+	});
+
+	showAlert('success', 'Đã nhận đơn hàng thành công');
 	window.location.replace(`/myorder`);
 };

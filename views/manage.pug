@@ -1,0 +1,255 @@
+extends base
+block append head 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+block content 
+    .bg-light.contain-req(data-path = `${req.path}` data-query = `${JSON.stringify(req.query)}`)
+        .row 
+            .col-xl-1 
+            .col-xl-10 
+                .container-fluid.bg-white 
+                    h4.text-center.pt-3 Bộ lọc
+                    //For >= tablet
+                    .row.align-items-center.d-none.d-sm-block
+                        h6.col-xl-2 Hãng sản xuất 
+                        .col-xl-10(class="btn-group" role="group" aria-label="Button group")
+                            a: button(data-manu = "Dell" type="button" class="manufacturer-filter btn btn-light m-1") Dell
+                            a: button(data-manu = "Asus" type="button" class="manufacturer-filter btn btn-light m-1") Asus
+                            a: button(data-manu = "Acer" type="button" class="manufacturer-filter btn btn-light m-1") Acer 
+                            a: button(data-manu = "Lenovo" type="button" class="manufacturer-filter btn btn-light m-1") Lenovo
+                    .row.align-items-center.d-none.d-sm-block
+                        h6.col-xl-2 Khoảng giá
+                        .col-xl-10(class="btn-group" role="group" aria-label="Button group")
+                            a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "10000000" data-minprice = "0" ) < 10 triệu
+                            a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "15000000" data-minprice = "10000000" ) 10 - 15 triệu
+                            a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "20000000" data-minprice = "15000000" ) 15 - 20 triệu
+                            a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "100000000" data-minprice = "20000000" ) > 20 triệu                         
+                    .row.align-items-center.d-none.d-sm-block
+                        h6.col-xl-2 Dung lượng RAM
+                        .col-xl-10(class="btn-group" role="group" aria-label="Button group")
+                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "4" ) 4GB
+                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "8" ) 8GB
+                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "16" ) 16GB
+                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "32" ) 32GB
+                    //For mobile
+                    .d-flex.justify-content-center.d-block.d-sm-none
+                        .dropdown.mx-1
+                            a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") Giá
+                            .dropdown-menu
+                                a.dropdown-item.price-filter(data-maxprice= "10000000" data-minprice = "0") <= 10 triệu
+                                a.dropdown-item.price-filter(data-maxprice= "15000000" data-minprice = "10000000") 10 triệu - 15 triệu
+                                a.dropdown-item.price-filter(data-maxprice= "20000000" data-minprice = "15000000") 15 triệu - 20 triệu
+                                a.dropdown-item.price-filter(data-maxprice= "100000000" data-minprice = "20000000") >= 20 triệu
+                        .dropdown.mx-1
+                            a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") Hãng
+                            .dropdown-menu
+                                a.dropdown-item.manufacturer-filter(data-manu = "Dell") Dell
+                                a.dropdown-item.manufacturer-filter(data-manu = "Asus") Asus
+                                a.dropdown-item.manufacturer-filter(data-manu = "Acer") Acer
+                                a.dropdown-item.manufacturer-filter(data-manu = "Lenovo") Lenovo
+                        .dropdown.mx-1
+                            a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") Chip
+                            .dropdown-menu
+                                a.dropdown-item.cpu-filter( data-cpu = 'i3' ) Intel I3
+                                a.dropdown-item.cpu-filter( data-cpu = 'i5' ) Intel I5
+                                a.dropdown-item.cpu-filter( data-cpu = 'i7' ) Intel I7
+                                a.dropdown-item.cpu-filter( data-cpu = 'r3' ) AMD Ryzen 3
+                                a.dropdown-item.cpu-filter( data-cpu = 'r5' ) AMD Ryzen 5
+                                a.dropdown-item.cpu-filter( data-cpu = 'r7' ) AMD Ryzen 7
+                        .dropdown.mx-1
+                            a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") RAM
+                            .dropdown-menu
+                                a.dropdown-item.ram-filter(data-ram = "4"  ) 4GB
+                                a.dropdown-item.ram-filter(data-ram = "8" ) 8GB
+                                a.dropdown-item.ram-filter(data-ram = "16"  ) 16GB
+                                a.dropdown-item.ram-filter(data-ram = "32" ) 32GB
+                .container-fluid.bg-white.pt-3
+                    .row.align-items-center.border.border-light
+                        h6.col-xl-2.col-3 Sắp xếp theo 
+                        .col-xl-10.col-9(class="btn-group" role="group" aria-label="Button group")
+                            a(href = '/'): button(type="button" class="btn btn-light m-1") Mặc định
+                            a: button(type="button" class="avail btn btn-light m-1" ) Còn hàng
+                            a: button(type="button" class="ascPrice btn btn-light m-1" ) Giá giảm dần
+                            a: button(type="button" class="desPrice btn btn-light m-1" ) Giá tăng dần
+                            a: button.d-none.d-sm-block(type="button" class="desRate btn btn-light m-1" ) Bán chạy
+                    .row.align-items-center.border.border-light
+                        h6.col-xl-2.col-3 Số lượng sản phẩm: #{laptops.length} 
+                        .col-xl-10.col-9(class="btn-group" role="group" aria-label="Button group")
+                            a(href = '/manage'): button(type="button" class="btn btn-primary m-1") Cập nhật lại    <i class="fa-solid fa-rotate-right"></i>
+                            a: button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#createModal` style='margin-top: 4px; margin-left: 10px;') Thêm sản phẩm mới
+                            .modal.fade( id =`createModal` tabindex='-1' aria-labelledby=`createModalLabel` aria-hidden='true' data-product = ``)
+                                .modal-dialog
+                                    .modal-content.bg-white
+                                        .modal-header.bg-white
+                                            h5(id = `createModalLabel`).modal-title Thêm sản phẩm mới
+                                            button.close(type='button' data-dismiss='modal' aria-label='Close')
+                                            span(aria-hidden='true') &times;
+                                        .modal-body.bg-white
+                                            form(id =`create-form` data-product = ``)
+                                                .form-group
+                                                    label(for='p_product_name') Tên sản phẩm
+                                                    input#p_product_name.form-control(type='text')
+                                                .form-group
+                                                    label(for='p_new_price') Giá
+                                                    input#p_new_price.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_discount_percentage') Phần trăm giảm giá
+                                                    input#p_discount_percentage.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_display') Màn hình
+                                                    input#p_display.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_cpu') CPU
+                                                    input#p_cpu.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_cpu_type') Loại CPU
+                                                    select#p_cpu_type.form-control
+                                                        each cpu in ['i3', 'i5', 'i7', 'r3', 'r5', 'r7']
+                                                            option(value=`${cpu}` ) #{cpu}     
+                                                .form-group
+                                                    label(for='p_gpu_name') GPU
+                                                    input#p_gpu_name.form-control(type='text')
+                                                .form-group
+                                                    label(for='p_gpu_onboard') Loại GPU
+                                                    select#p_gpu_onboard.form-control
+                                                        option(value = '1') Onboard
+                                                        option(value = '0' selected='selected') Card rời
+                                                .form-group
+                                                    label(for='p_ram') RAM
+                                                    input#p_ram.form-control(type='text')
+                                                .form-group
+                                                    label(for='p_manufacturer') Nhà sản xuất
+                                                    input#p_manufacturer.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_stock_quantity') Số lượng tồn kho
+                                                    input#p_stock_quantity.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_material') Chất liệu
+                                                    input#p_material.form-control(type='text')
+                                                .form-group
+                                                    label(for='p_ssd') SSD
+                                                    input#p_ssd.form-control(type='text' )
+                                                .form-group
+                                                    label(for='p_operating_system') Hệ điều hành
+                                                    input#p_operating_system.form-control(type='text')
+                                                .form-group
+                                                    label(for='p_available') Tình trạng hàng
+                                                    select#p_available.form-control
+                                                        option(value = '1' selected='selected') Cho phép bán
+                                                        option(value = '0') Ngưng bán
+                                                        
+                                        .modal-footer
+                                            button.btn.btn-primary.btn-create(type='button') Tạo
+                
+                    .row.pt-3
+                        
+                        if laptops.length == 0
+                            h5.col-12.pt-5.pb-5.text-center Không có sản phẩm phù hợp
+                        else 
+                            each laptop in laptops 
+                                .product-card.col-xl-3.col-md-4.col-sm-6.col-12
+                                    .card.my-2
+                                        a.border-bottom.border-secondary(href=`/${laptop.product_id}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
+                                        .card-body.text-truncate
+                                            span.small= laptop.product_name
+                                            span.small (#{laptop.cpu} | #{laptop.ram}GB | #{laptop.ssd}GB)
+                                            br
+                                            br
+                                            span.font-weight-bold.card-text.line-through.text-secondary #{parseFloat(laptop.old_price).toLocaleString('en-US')} đ
+                                            span.font-weight-bold.py-2.px-2.badge.badge-warning.rounded-circle.ml-3.text-white -#{laptop.discount_percentage}%
+                                            br
+                                            span.h5.font-weight-bolder.card-text.text-danger #{parseFloat(laptop.new_price).toLocaleString('en-US')} đ
+                                            br
+                                            br
+                                            button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#exampleModal${laptop.product_id}`) Cập nhật
+                                            .modal.fade( id =`exampleModal${laptop.product_id}` tabindex='-1' aria-labelledby=`exampleModalLabel${laptop.product_id}` aria-hidden='true' data-product = `${laptop.product_id}`)
+                                                .modal-dialog
+                                                    .modal-content.bg-white
+                                                        .modal-header.bg-white
+                                                            h5(id = `exampleModalLabel${laptop.product_id}`).modal-title Cập nhật thông tin sản phẩm
+                                                            button.close(type='button' data-dismiss='modal' aria-label='Close')
+                                                            span(aria-hidden='true') &times;
+                                                        .modal-body.bg-white
+                                                            form(id =`update-form${laptop.product_id}` data-product = `${laptop.product_id}`)
+                                                                .form-group
+                                                                    label(for='p_product_name') Tên sản phẩm
+                                                                    input#p_product_name.form-control(type='text' value =`${laptop.product_name}`)
+                                                                .form-group
+                                                                    label(for='p_new_price') Giá
+                                                                    input#p_new_price.form-control(type='text' value =`${parseFloat(laptop.new_price)}`)
+                                                                .form-group
+                                                                    label(for='p_discount_percentage') Phần trăm giảm giá
+                                                                    input#p_discount_percentage.form-control(type='text' value=`${laptop.discount_percentage}`)
+                                                                .form-group
+                                                                    label(for='p_display') Màn hình
+                                                                    input#p_display.form-control(type='text' value=`${laptop.display}`)
+                                                                .form-group
+                                                                    label(for='p_cpu') CPU
+                                                                    input#p_cpu.form-control(type='text' value=`${laptop.cpu}`)
+                                                                .form-group
+                                                                    label(for='p_cpu_type') Loại CPU
+                                                                    select#p_cpu_type.form-control
+                                                                        each cpu in ['i3', 'i5', 'i7', 'r3', 'r5', 'r7']
+                                                                            if laptop.cpu_type === cpu
+                                                                                option(value=`${cpu}` selected = 'selected') #{cpu} 
+                                                                            else 
+                                                                                option(value=`${cpu}` ) #{cpu}     
+                                                                .form-group
+                                                                    label(for='p_gpu_name') GPU
+                                                                    input#p_gpu_name.form-control(type='text' value=`${laptop.gpu_name}`)
+                                                                .form-group
+                                                                    label(for='p_gpu_onboard') Loại GPU
+                                                                    select#p_gpu_onboard.form-control
+                                                                        if laptop.gpu_onboard === 1
+                                                                            option(value = '1' selected='selected') Onboard
+                                                                            option(value = '0') Card rời
+                                                                        else 
+                                                                            option(value = '1') Onboard
+                                                                            option(value = '0' selected='selected') Card rời
+                                                                .form-group
+                                                                    label(for='p_ram') RAM
+                                                                    input#p_ram.form-control(type='text' value=`${laptop.ram}`)
+                                                                .form-group
+                                                                    label(for='p_manufacturer') Nhà sản xuất
+                                                                    input#p_manufacturer.form-control(type='text' value=`${laptop.manufacturer}`)
+                                                                .form-group
+                                                                    label(for='p_stock_quantity') Số lượng tồn kho
+                                                                    input#p_stock_quantity.form-control(type='text' value=`${laptop.stock_quantity}`)
+                                                                .form-group
+                                                                    label(for='p_material') Chất liệu
+                                                                    input#p_material.form-control(type='text' value=`${laptop.material}`)
+                                                                .form-group
+                                                                    label(for='p_ssd') SSD
+                                                                    input#p_ssd.form-control(type='text' value=`${laptop.ssd}`)
+                                                                .form-group
+                                                                    label(for='p_operating_system') Hệ điều hành
+                                                                    input#p_operating_system.form-control(type='text' value=`${laptop.operating_system}`)
+                                                                .form-group
+                                                                    label(for='p_available') Tình trạng hàng
+                                                                    select#p_available.form-control
+                                                                        if laptop.available === 1
+                                                                            option(value = '1' selected='selected') Cho phép bán
+                                                                            option(value = '0') Ngưng bán
+                                                                        else 
+                                                                            option(value = '1') Cho phép bán
+                                                                            option(value = '0' selected='selected') Ngưng bán
+                
+                                                                
+                                                        .modal-footer
+                                                            button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.product_id}`) Cập nhật
+                                                            button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.product_id}`) Xóa khỏi kho
+                                                            
+                .d-flex.justify-content-center.bg-white.py-3
+                    if pageCurrent > 1 || laptops.length == 0
+                        button.btn.btn-light.paginationBtn(data-page=`${pageCurrent-1}`) Trước  
+                    if laptops.length > 0
+                        button.btn.btn-light.paginationBtn(data-page=`${pageCurrent+1}`) Tiếp                
+                            // Modal
+                
+            
+
+block append script
+    script(src="js/filter.mjs") 
+    script(src="js/purchase.mjs") 
+    script(src="js/manage.js") 
+

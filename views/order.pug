@@ -90,6 +90,41 @@ block content
 							button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng
 							button.confirm-delete-btn.btn.btn-primary(type='button') Xác nhận hủy đơn hàng
 
+			.modal.fade#staticBackdrop(data-backdrop='static' data-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+				.modal-dialog.modal-dialog-scrollable
+					.modal-content
+						.modal-header.bg-primary
+							h5.modal-title#staticBackdropLabel.text-white.font-weight-bold Xác nhận hủy đơn
+							button.close(type='button' data-dismiss='modal' aria-label='Close')
+								span.text-white(aria-hidden='true') &times;
+						.modal-body
+							form
+								.form-group
+									label(for='delete-note') Lý do
+									input.form-control(type='text' id='delete-note' aria-describedby='emailHelp' required)
+
+						.modal-footer
+							button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng
+							button.confirm-delete-btn.btn.btn-primary(type='button') Xác nhận hủy đơn hàng
+
+			.modal.fade#staticBackdrop2(data-backdrop='static' data-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+				.modal-dialog.modal-dialog-scrollable
+					.modal-content
+						.modal-header.bg-primary
+							h5.modal-title#staticBackdropLabel.text-white.font-weight-bold Xác nhận đã nhận hàng thành công
+							button.close(type='button' data-dismiss='modal' aria-label='Close')
+								span.text-white(aria-hidden='true') &times;
+						.modal-body
+
+						.modal-footer
+							button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng
+							button.confirm-receive-btn.btn.btn-primary(type='button') Xác nhận
+
+
+
+
+
+
 block append script 
 	script(src="js/orderRender.js") 
 

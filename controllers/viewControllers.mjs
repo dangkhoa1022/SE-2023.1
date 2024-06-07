@@ -26,13 +26,32 @@ const getOverview = catchAsync(async (req, res) => {
 	});
 });
 const getProduct = catchAsync(async (req, res, next) => {
-	const product = await Product.findOne({ slug: req.params.slug });
-	if (!product) next(new appError('There is no product with that name', 404));
+    const product = await Product.findOne({ slug: req.params.slug });
+    if (!product) next(new appError('There is no product with that name', 404));
 
 	res.status(200).render('product', {
 		title: product?.name_model,
 		product,
 	});
+});
+
+const getManageProduct = catchAsync(async (req, res, next) => {
+    if (!req.query.limit) req.query.limit = 16;
+    const features = new apiFeatures(Product.find(), req.query)
+        .filter()
+        .sort()
+        .limit()
+        .paginate();
+    const laptops = await features.query;
+    const stores = await Store.find({});
+    const pageCurrent = req.query.page || 1;
+    res.status(200).render('manage', {
+        title: 'Manage storage',
+        laptops,
+        pageCurrent,
+        req,
+        stores,
+    });
 });
 const getLoginForm = (req, res) => {
 	res.status(200).render('login', {
@@ -86,7 +105,6 @@ const manageOrder = catchAsync(async (req, res) => {
 	if (!orders) {
 		return res.status(404).json({ message: "No orders found." });
 	}
-	//console.log(orders)
 	res.status(200).render('manageOrder', {
 		title: 'All orders',
 		orders,
@@ -96,6 +114,7 @@ const manageOrder = catchAsync(async (req, res) => {
 
 
 export {
+	getManageProduct,
 	getMyOrder,
 	getOverview,
 	getProduct,

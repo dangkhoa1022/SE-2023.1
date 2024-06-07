@@ -187,6 +187,12 @@ const isLoggedIn = async (req, res, next) => {
         return next();
     }
 };
+
+const adminOnly = async (req, res, next) => {
+    if (!req.user || req.user.role === "user")
+        return next(new appError("Bạn không có quyền truy cập vào trang này"));
+    next()
+};
 export {
     login,
     logout,
@@ -196,4 +202,5 @@ export {
     protect,
     updatePassword,
     isLoggedIn,
+    adminOnly
 };

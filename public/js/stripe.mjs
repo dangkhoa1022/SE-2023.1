@@ -82,48 +82,57 @@ const paymentMethodInputs = document.querySelectorAll(
 	`input[name="gridRadios"]`,
 );
 
-paymentMethodInputs.onclick = (e) => {
-	e.checked = !e.checked;
-};
+paymentMethodInputs.forEach(
+	(input) =>
+		(input.onclick = (e) => {
+			e.checked = !e.checked;
+		}),
+);
 
 const submitButton = document.querySelector('button.submit.btn.btn-primary');
 
 submitButton.onclick = async () => {
-	const receiverName = receiverNameInput.value.trim();
-	const address = addressInput.value.trim();
-	const phone = phoneNumInput.value.trim();
-	const note = noteInput.value.trim() || '';
-	const paymentMethodInput = Array.from(paymentMethodInputs).find(
-		(input) => input.checked,
-	);
-	const paymentMethod = paymentMethodInput.value;
-	const deliveryData = {
-		receiverName,
-		address,
-		phone,
-		note,
-		paymentMethod,
-	};
-	if (validateInput()) return;
+	try {
+		const receiverName = receiverNameInput.value.trim();
+		const address = addressInput.value.trim();
+		const phone = phoneNumInput.value.trim();
+		const note = noteInput.value.trim() || '';
+		const paymentMethodInput = Array.from(paymentMethodInputs).find(
+			(input) => input.checked,
+		);
+		const paymentMethod = paymentMethodInput.value;
+		const deliveryData = {
+			receiverName,
+			address,
+			phone,
+			note,
+			paymentMethod,
+		};
+		if (validateInput()) return;
 
-	if (paymentMethod === 'COD') {
-		await paymentWithCOD(deliveryData);
-	} else {
-		await paymentWithStripe(deliveryData);
+		if (paymentMethod === 'COD') {
+			await paymentWithCOD(deliveryData);
+		} else {
+			await paymentWithStripe(deliveryData);
+		}
+
+		window.location.replace('/myorder');
+
+		const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
+		console.log('delete online');
+		fetch(`http://localhost:8000/api/cart/delete`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				cartId,
+				deletedIds: selectedItems.map((item) => item.purchaseItem),
+			}),
+		});
+	} catch (err) {
+		console.log(err);
 	}
-
-	const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
-	console.log('delete online');
-	fetch(`http://localhost:8000/api/cart/delete`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			cartId,
-			deletedIds: selectedItems.map((item) => item.purchaseItem),
-		}),
-	});
 };
 
 const validateInput = () => {
@@ -140,6 +149,7 @@ const validateInput = () => {
 			msg.style.display = 'none';
 		}
 	});
+	console.log('invalid', invalid);
 	return invalid;
 };
 
