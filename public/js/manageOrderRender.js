@@ -70,16 +70,21 @@ const getHtmlForItem = (item) => {
 const getButton = (status, id) => {
   // Use a ternary operator for a more concise approach
   return status === 'pending' ? `
-    <button type="button" class="mt-4 text-right btn btn-primary accept-btn" data-id="${id}">
-      <i class="fa-solid fa-check"></i> Chấp nhận
+    <button type="button" class="mt-4 text-right btn btn-primary accept-btn" style="width:180px; justify-content: center;" data-id="${id}">
+      <div style="width:160px; text-align: center;">
+        <i class="fa-solid fa-check"></i> 
+        Chấp nhận
+      </div>
     </button>
     <button 
-    type="button" class="mt-4 text-right btn btn-danger reject-btn" 
+    type="button" class="mt-4 text-right btn btn-danger reject-btn" style="width:180px; justify-content: center; padding-bottom: 10px"
     data-toggle="modal" 
     data-target="#staticBackdrop" 
     data-id = '${id}'>
-    <i class="fa-solid fa-trash-can"></i> 
-    Từ chối
+    <div style = "width:160px; text-align: center;">
+      <i class="fa-solid fa-trash-can"></i> 
+      Từ chối
+    </div>
   </button>
   ` : '';
 };
@@ -99,9 +104,8 @@ const renderList = (status) => {
 			accumulate +
 			`<li class="row border-bottom border-secondary pb-1 pt-4">
                 <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center align-items-center mb-3">
-                    <img src="/laptop/${
-											order.items[0].product.image[0]
-										}" style="max-width: 150px; max-height: 150">
+                    <img src="/laptop/${order.items[0].product.image[0]}" style="max-width: 150px; max-height: 150">
+                    
                 </div>
                 <div class="col-12 col-md-8 col-lg-7 pl-5">
                     <span class="font-weight-bold">Người đặt đơn: </span>
@@ -128,7 +132,7 @@ const renderList = (status) => {
                     ${getDetailOrder(order.items, index)}
                 </div>
                 <div class="col-12 col-lg-3">
-                    <div class="text-right d-flex flex-column align-items-end justify-content-end">
+                    <div class="text-right d-flex flex-column align-items-end justify-content-end" style="padding-bottom:20px">
                       <div >
                         ${getStatus(order.orderStatus)}
                       </div>
@@ -164,6 +168,7 @@ const renderList = (status) => {
 
 	list.innerHTML = html;
 };
+
 
 const getStatus = (status) => {
 	switch (status) {

@@ -176,7 +176,7 @@ const renderList = (status) => {
                     ${getDetailOrder(order.items, index)}
                 </div>
                 <div class="col-12 col-lg-3">
-                    <div class="text-right d-flex flex-column align-items-end justify-content-end">
+                    <div class="text-right d-flex flex-column align-items-end justify-content-end" style="padding-bottom: 20px">
                       <div >
                         ${getStatus(order.orderStatus)}
                       </div>
