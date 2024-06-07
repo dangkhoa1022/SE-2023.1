@@ -135,6 +135,14 @@ const render = () => {
 const renderList = (status) => {
 	const list = document.querySelector(`#${status}-order`);
 	const filterOrder = orders.filter((order) => order.orderStatus === status);
+	if (filterOrder.length === 0) {
+		list.innerHTML = `
+			<li class='row border-bottom border-secondary pb-5 pt-5' style="display:block; font-size: 25; text-align:center;">
+				Không có đơn hàng nào!
+			</li>
+		`;
+		return;
+	}
 	let html = filterOrder.reduce((accumulate, order, index) => {
 		return (
 			accumulate +
