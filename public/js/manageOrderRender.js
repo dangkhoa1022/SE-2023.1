@@ -42,89 +42,54 @@ const getDetailOrder = (items, index) => {
 const getHtmlForItem = (item) => {
 	const product = item.product;
 	return `<div class="row">
-                <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
-                    <img src="/laptop/${
-											product.image[0]
-										}" style="max-width: 80px; max-height: 80px">
+            <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
+                <img src="/laptop/${
+                  product.image[0]
+                }" style="max-width: 80px; max-height: 80px">
+            </div>
+            <div class="col-12 col-md-8 col-lg-6 pl-1" x>
+                <p style = 'font-size: 15px'>
+                    ${product.name_model} 
+                    </br>
+                    (${product.cpu} | ${product.ram} GB | ${product.ssd} GB )
+                </p>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="text-right d-flex flex-column align-items-end justify-content-end">
+                <div>
+                    <span class="productCost text-secondary">
+                        ${product.price.toLocaleString('en-US')}đ x ${item.quantity}
+                    </span>
+                    <br>
                 </div>
-                <div class="col-12 col-md-8 col-lg-6 pl-1" x>
-                    <p style = 'font-size: 15px'>
-                        ${product.name_model} 
-                        </br>
-                        (${product.cpu} | ${product.ram} GB | ${product.ssd} GB )
-                    </p>
-                   
-                </div>
-                <div class="col-12 col-lg-4">
-                    <div class="text-right d-flex flex-column align-items-end justify-content-end">
-
-                        <div>
-                            <span class="productCost text-secondary">
-                                ${product.price.toLocaleString('en-US')}đ x ${
-		item.quantity
-	}
-                            </span>
-                            <br>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+              </div>
+            </div>
+          </div>`;
 };
 
 const getButton = (status, id) => {
-	if (status === 'pending') {
-		return `
-      <button 
-        type="button" 
-        class="mt-4 text-right btn btn-danger delete-btn" 
-        data-toggle="modal" 
-        data-target="#staticBackdrop" 
-        data-id = '${id}'
-       >
-        <i class="fa-solid fa-trash-can"></i> 
-        Hủy đơn hàng
-      </button>
-      `;
-
-	}
-
-	if (status === 'delivering') {
-		return `
-      <button 
-        type="button" 
-        data-toggle="modal" 
-        data-id = '${id}'
-        data-target="#staticBackdrop2" 
-        class="mt-4 text-right btn btn-success receive-btn" 
-       >
-        <i class="fa-solid fa-trash-can"></i> 
-        Đã nhận hàng
-      </button>
-    `;
-	}
-
-	return '';
+  // Use a ternary operator for a more concise approach
+  return status === 'pending' ? `
+    <button type="button" class="mt-4 text-right btn btn-primary accept-btn" style="width:180px; justify-content: center;" data-id="${id}">
+      <div style="width:160px; text-align: center;">
+        <i class="fa-solid fa-check"></i> 
+        Chấp nhận
+      </div>
+    </button>
+    <button 
+    type="button" class="mt-4 text-right btn btn-danger reject-btn" style="width:180px; justify-content: center; padding-bottom: 10px"
+    data-toggle="modal" 
+    data-target="#staticBackdrop" 
+    data-id = '${id}'>
+    <div style = "width:160px; text-align: center;">
+      <i class="fa-solid fa-trash-can"></i> 
+      Từ chối
+    </div>
+  </button>
+  ` : '';
 };
 
-const updateOrder = async (id, orderStatus, note) => {
-	fetch(`http://localhost:8000/api/purchase/update`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: {
-			orderStatus,
-			id,
-			note,
-		},
-	});
 
-	console.log(orders);
-	orders.forEach((order) => {
-		if (order._id === id) order.orderStatus = orderStatus;
-	});
-};
 
 const render = () => {
 	const statuses = ['pending', 'success', 'delivering', 'rejected'];
@@ -134,23 +99,13 @@ const render = () => {
 const renderList = (status) => {
 	const list = document.querySelector(`#${status}-order`);
 	const filterOrder = orders.filter((order) => order.orderStatus === status);
-	if (filterOrder.length === 0) {
-		list.innerHTML = `
-			<li class='row border-bottom border-secondary pb-5 pt-5' style="display:block; font-size: 25; text-align:center;">
-				Không có đơn hàng nào!
-			</li>
-		`;
-		return;
-	}
 	let html = filterOrder.reduce((accumulate, order, index) => {
-		console.log(order);
 		return (
 			accumulate +
 			`<li class="row border-bottom border-secondary pb-1 pt-4">
                 <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center align-items-center mb-3">
-                    <img src="/laptop/${
-											order.items[0].product.image[0]
-										}" style="max-width: 150px; max-height: 150">
+                    <img src="/laptop/${order.items[0].product.image[0]}" style="max-width: 150px; max-height: 150">
+                    
                 </div>
                 <div class="col-12 col-md-8 col-lg-7 pl-5">
                     <span class="font-weight-bold">Người đặt đơn: </span>
@@ -177,7 +132,7 @@ const renderList = (status) => {
                     ${getDetailOrder(order.items, index)}
                 </div>
                 <div class="col-12 col-lg-3">
-                    <div class="text-right d-flex flex-column align-items-end justify-content-end" style="padding-bottom: 20px">
+                    <div class="text-right d-flex flex-column align-items-end justify-content-end" style="padding-bottom:20px">
                       <div >
                         ${getStatus(order.orderStatus)}
                       </div>
@@ -191,10 +146,10 @@ const renderList = (status) => {
                         </span>
                       </div>
                       <div>
-                          <span class="font-weight-bold">Phương thức TT: 
+                          <span class="font-weight-bold">Phương thức thanh toán: 
                           </span>
                           <span >${order.paymentMethod}</span>
-                          <span class="font-weight-bold">Phí ship: </span>
+                          <span class="font-weight-bold">Phí vận chuyển: </span>
                           <span class="productCost">
                               ${order.deliveryFee.toLocaleString('en-US')}
                           </span>
@@ -213,6 +168,7 @@ const renderList = (status) => {
 
 	list.innerHTML = html;
 };
+
 
 const getStatus = (status) => {
 	switch (status) {
@@ -245,22 +201,48 @@ const getStatus = (status) => {
 
 render();
 
-let deleteId = '';
-let receiveId = '';
-
-const deleteBtns = document.querySelectorAll('.delete-btn');
-
-deleteBtns.forEach((btn) => {
-	btn.onclick = () => {
-		deleteId = btn.dataset.id;
+const updateOrder = async (id, status, note) => {
+	fetch(`http://localhost:8000/api/purchase/update`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: {
+			orderStatus,
+			id,
+			note,
+		},
+	});
+};
+const acceptBtns = document.querySelectorAll('.accept-btn');
+let acceptId='';
+acceptBtns.forEach((btn) => {
+	btn.onclick = async() => {
+		acceptId = btn.dataset.id;
+    console.log(acceptId);
+    await fetch(`http://localhost:8000/api/purchase/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderStatus: 'delivering',
+        id: acceptId,
+      }),
+    });
+    window.location.replace(`/manageOrder`);
 	};
 });
 
-const receiveBtns = document.querySelectorAll('.receive-btn');
 
-receiveBtns.forEach((btn) => {
+
+
+let deleteId = '';
+
+const deleteBtns = document.querySelectorAll('.reject-btn');
+deleteBtns.forEach((btn) => {
 	btn.onclick = () => {
-		receiveId = btn.dataset.id;
+		deleteId = btn.dataset.id;
 	};
 });
 
@@ -279,25 +261,6 @@ confirmDeleteBtn.onclick = async () => {
 			note,
 		}),
 	});
-
 	showAlert('success', 'Đã hủy đơn hàng thành công');
-	window.location.replace(`/myorder`);
-};
-
-const confirmReceiveBtn = document.querySelector('.confirm-receive-btn');
-
-confirmReceiveBtn.onclick = async () => {
-	await fetch(`http://localhost:8000/api/purchase/update`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			orderStatus: 'success',
-			id: receiveId,
-		}),
-	});
-
-	showAlert('success', 'Đã nhận đơn hàng thành công');
-	window.location.replace(`/myorder`);
+	window.location.replace(`/manageOrder`);
 };
