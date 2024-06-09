@@ -76,6 +76,7 @@ block content
                                 a.dropdown-item.ram-filter(data-minram = "4" data-maxram= "8") 8GB
                                 a.dropdown-item.ram-filter(data-minram = "8" data-maxram= "16") 16GB
                                 a.dropdown-item.ram-filter(data-minram = "16" data-maxram= "128") > 16GB
+                              
                 .container-fluid.bg-white.pt-3
                     .row.align-items-center.border.border-light
                         h6.col-xl-2.col-3 Sắp xếp theo 
@@ -91,9 +92,12 @@ block content
                         else 
                             each laptop in laptops 
                                 .product-card.col-xl-3.col-md-4.col-sm-6.col-12
+                                    
                                     .card.my-2
                                         a.border-bottom.border-secondary(href=`/${laptop.slug}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
                                         .card-body.text-truncate
+
+
                                             span.small= laptop.name_model
                                             br
                                             span.small (#{laptop.cpu}|#{laptop.ram}GB)
@@ -111,6 +115,11 @@ block content
                                                 a.text-primary So sánh
                                                 if user !== null
                                                     button.btn.btn-white.purchase-btn(data-user = `${user === null ? null :user._id}` data-item = `${laptop.id}`): i.text-primary.h5(class="fa-solid fa-cart-shopping")
+                                    
+                                        .dropdown-content
+                                            iframe(src=`/${laptop.slug}` height="300" width="285") 
+                                            //- tạo dropdown cho các may tính
+                                            //- //iframe (src='/${laptop.slug}' style="border:2px solid red;)
                 if laptops.length > 0
                     .d-flex.justify-content-center.bg-white.py-3
                         if pageCurrent > 1
