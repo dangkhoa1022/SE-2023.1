@@ -44,8 +44,8 @@ const getHtmlForItem = (item) => {
 	return `<div class="row">
             <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
                 <img src="/laptop/${
-                  product.image[0]
-                }" style="max-width: 80px; max-height: 80px">
+									product.image[0]
+								}" style="max-width: 80px; max-height: 80px">
             </div>
             <div class="col-12 col-md-8 col-lg-6 pl-1" x>
                 <p style = 'font-size: 15px'>
@@ -58,7 +58,9 @@ const getHtmlForItem = (item) => {
               <div class="text-right d-flex flex-column align-items-end justify-content-end">
                 <div>
                     <span class="productCost text-secondary">
-                        ${product.price.toLocaleString('en-US')}đ x ${item.quantity}
+                        ${product.price.toLocaleString('en-US')}đ x ${
+		item.quantity
+	}
                     </span>
                     <br>
                 </div>
@@ -68,8 +70,9 @@ const getHtmlForItem = (item) => {
 };
 
 const getButton = (status, id) => {
-  // Use a ternary operator for a more concise approach
-  return status === 'pending' ? `
+	// Use a ternary operator for a more concise approach
+	return status === 'pending'
+		? `
     <button type="button" class="mt-4 text-right btn btn-primary accept-btn" style="width:180px; justify-content: center;" data-id="${id}">
       <div style="width:160px; text-align: center;">
         <i class="fa-solid fa-check"></i> 
@@ -86,10 +89,9 @@ const getButton = (status, id) => {
       Từ chối
     </div>
   </button>
-  ` : '';
+  `
+		: '';
 };
-
-
 
 const render = () => {
 	const statuses = ['pending', 'success', 'delivering', 'rejected'];
@@ -104,7 +106,9 @@ const renderList = (status) => {
 			accumulate +
 			`<li class="row border-bottom border-secondary pb-1 pt-4">
                 <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center align-items-center mb-3">
-                    <img src="/laptop/${order.items[0].product.image[0]}" style="max-width: 150px; max-height: 150">
+                    <img src="/laptop/${
+											order.items[0].product.image[0]
+										}" style="max-width: 150px; max-height: 150">
                     
                 </div>
                 <div class="col-12 col-md-8 col-lg-7 pl-5">
@@ -169,7 +173,6 @@ const renderList = (status) => {
 	list.innerHTML = html;
 };
 
-
 const getStatus = (status) => {
 	switch (status) {
 		case 'pending':
@@ -215,27 +218,23 @@ const updateOrder = async (id, status, note) => {
 	});
 };
 const acceptBtns = document.querySelectorAll('.accept-btn');
-let acceptId='';
+let acceptId = '';
 acceptBtns.forEach((btn) => {
-	btn.onclick = async() => {
+	btn.onclick = async () => {
 		acceptId = btn.dataset.id;
-    console.log(acceptId);
-    await fetch(`http://localhost:8000/api/purchase/update`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        orderStatus: 'delivering',
-        id: acceptId,
-      }),
-    });
-    window.location.replace(`/manageOrder`);
+		await fetch(`http://localhost:8000/api/purchase/update`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				orderStatus: 'delivering',
+				id: acceptId,
+			}),
+		});
+		window.location.replace(`/manageOrder`);
 	};
 });
-
-
-
 
 let deleteId = '';
 

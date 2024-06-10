@@ -51,7 +51,9 @@ const getHtmlForItem = (item) => {
                     <p style = 'font-size: 15px'>
                         ${product.name_model} 
                         </br>
-                        (${product.cpu} | ${product.ram} GB | ${product.ssd} GB )
+                        (${product.cpu} | ${product.ram} GB | ${
+		product.ssd
+	} GB )
                     </p>
                    
                 </div>
@@ -86,7 +88,6 @@ const getButton = (status, id) => {
         Hủy đơn hàng
       </button>
       `;
-
 	}
 
 	if (status === 'delivering') {
@@ -120,7 +121,6 @@ const updateOrder = async (id, orderStatus, note) => {
 		},
 	});
 
-	console.log(orders);
 	orders.forEach((order) => {
 		if (order._id === id) order.orderStatus = orderStatus;
 	});
@@ -143,7 +143,6 @@ const renderList = (status) => {
 		return;
 	}
 	let html = filterOrder.reduce((accumulate, order, index) => {
-		console.log(order);
 		return (
 			accumulate +
 			`<li class="row border-bottom border-secondary pb-1 pt-4">

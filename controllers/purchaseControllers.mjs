@@ -40,7 +40,6 @@ const deleteItemInCart = catchAsync(async (req, res, next) => {
 	const { deletedIds, cartId } = req.body;
 	if (cartId) {
 		const cart = await Cart.findById(cartId);
-		console.log(deletedIds);
 		cart.items = cart.items.filter(
 			(item) => !deletedIds.includes(item._id.toString()),
 		);
@@ -107,7 +106,6 @@ const updateCart = catchAsync(async (req, res, next) => {
 });
 
 const createOrder = catchAsync(async (req, res, next) => {
-	console.log(req.body);
 	const newOrder = new Order({
 		...req.body,
 		userId: req.user._id,
@@ -117,7 +115,6 @@ const createOrder = catchAsync(async (req, res, next) => {
 });
 
 const createOrderStripe = catchAsync(async (req, res, next) => {
-	console.log(req.query);
 	let body = JSON.parse(req.query.query);
 
 	const deletedIds = body.items;
@@ -140,7 +137,6 @@ const createOrderStripe = catchAsync(async (req, res, next) => {
 });
 
 const updateOrder = catchAsync(async (req, res, next) => {
-	console.log(req.body);
 	await Order.findByIdAndUpdate(req.body.id, {
 		...req.body,
 	});

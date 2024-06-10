@@ -176,7 +176,6 @@ const isLoggedIn = async (req, res, next) => {
 				return next();
 			}
 			const cart = await Cart.findOne({ userId: freshUser._id });
-			console.log(cart);
 			//5. User is logged
 			res.locals.user = freshUser;
 			res.locals.cart = cart;

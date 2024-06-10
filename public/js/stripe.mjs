@@ -176,7 +176,6 @@ const paymentWithCOD = async (deliveryData) => {
 			...deliveryData,
 			items: selectedItems.map((item) => item.purchaseItem),
 			totalPrice: selectedItems.reduce((total, item) => {
-				console.log(item);
 				return total + item.laptop.price * parseInt(item.quantity);
 			}, 0),
 		}),
@@ -206,7 +205,6 @@ const purchaseItems = async (total, deliveryData) => {
 		...deliveryData,
 		items: selectedItems.map((item) => item.purchaseItem),
 		totalPrice: selectedItems.reduce((total, item) => {
-			console.log(item);
 			return total + item.laptop.price * parseInt(item.quantity);
 		}, 0),
 	});
