@@ -77,7 +77,7 @@
                                 a(href = `${user === null? "login":"/mycart" }` style = "text-decoration: none").text-white
                                     .cart-icon-wrapper(style='position: relative; display: inline-block;')
                                         i.fa-solid.fa-cart-shopping(style='font-size: 30px')
-                                        span.cart-count(style='position: absolute; top: -15px; right: -15px; background-color: #df4545; color: white; font-size: 12px; padding: 3px 10px; border-radius: 50%;') #{cart !== null ? cart.items.length : 0}
+                                        span.cart-count(style='position: absolute; top: -15px; right: -15px; background-color: #df4545; color: white; font-size: 12px; padding: 3px 10px; border-radius: 50%;') #{cart? cart.items.length : 0}
     .container-fluid.py-2
         .row.align-items-center.text-white
             .dropdown
