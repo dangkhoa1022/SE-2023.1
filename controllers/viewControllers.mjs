@@ -111,7 +111,16 @@ const manageOrder = catchAsync(async (req, res) => {
 	});
   });
   
-
+const manageProfit = catchAsync(async (req, res) => {
+	const orders = await Order.find({}); 
+	if (!orders) {
+		return res.status(404).json({ message: "No orders found." });
+	}
+	res.status(200).render('manage_profit', {
+		title: 'All orders',
+		orders,
+	});
+  });
 
 export {
 	getManageProduct,
@@ -123,4 +132,5 @@ export {
 	getSignupForm,
 	getMyCart,
 	manageOrder,
+	manageProfit,
 };

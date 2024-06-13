@@ -8,7 +8,8 @@ import {
     changePassword,
     getManageProduct,
     getMyOrder,
-    manageOrder
+    manageOrder,
+    manageProfit,
 } from '../controllers/viewControllers.mjs';
 import {
 	isLoggedIn,
@@ -25,6 +26,7 @@ Router.get('/myorder', getMyOrder);
 Router.get('/changePassword', protect, changePassword);
 Router.get('/manageOrder', manageOrder);
 Router.get('/manage', adminOnly, getManageProduct);
+Router.get('/manageProfit', manageProfit);
 Router.get('/:slug', getProduct);
 Router.route('/').get(getOverview);
 
