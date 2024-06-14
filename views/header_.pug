@@ -102,18 +102,75 @@
             .d-none.d-xl-block.col-xl-2
                 i(class="fa-solid fa-city")
                 span.pl-2 Ưu đãi doanh nghiệp
-    .banner 
-        marquee(direction="left" behavior="scroll" scrollamount="5") 
-            img(src="banner/1.jpg" height="170")
-            img(src="banner/2.jpg" height="170")
-            img(src="banner/3.jpg" height="170")
-            img(src="banner/4.jpg" height="170")
-            img(src="banner/5.jpg" height="170")
-            img(src="banner/6.jpg" height="170")
-            img(src="banner/7.jpg" height="170")
-            img(src="banner/8.jpg" height="170")
-            img(src="banner/9.jpg" height="170")
-            img(src="banner/10.jpg" height="170")
+    //- .banner
+    //-     .banner-wrapper
+    //-         .banner-group#banner-group-1
+    //-             each imgSrc in ['banner/1.jpg', 'banner/2.jpg', 'banner/3.jpg']
+    //-                 img(src=imgSrc height="170")
+    //-         .banner-group#banner-group-2(style="display:none")
+    //-             each imgSrc in ['banner/4.jpg', 'banner/5.jpg', 'banner/6.jpg']
+    //-                 img(src=imgSrc height="170")
+    //-         .banner-group#banner-group-3(style="display:none")
+    //-             each imgSrc in ['banner/7.jpg', 'banner/8.jpg', 'banner/9.jpg']
+    //-                 img(src=imgSrc height="170")
+    //-         .banner-group#banner-group-4(style="display:none")
+    //-             each imgSrc in ['banner/10.jpg', 'banner/4.jpg', 'banner/7.jpg']
+    //-                 img(src=imgSrc height="170")
 
+    //- .banner-controls
+    //-     .row.align-items-center
+    //-         .col-md-4.text-right
+    //-             button.btn.btn-outline-secondary.previous-btn(type="button") Previous
+    //-         .col-md-4.text-center
+    //-             button.btn.btn-outline-secondary.next-btn(type="button") Next
+    //-         .col-md-4.text-left
 
+    .banner.d-flex.align-items-center.justify-content-around 
+        button.btn.btn-outline-secondary.bg-red.previous-btn(type="button") Previous
+        .banner-wrapper
+            .banner-group#banner-group-1
+                each imgSrc in ['banner/1.jpg', 'banner/2.jpg', 'banner/3.jpg']
+                    img(src=imgSrc height="212.5", width="400")
+            .banner-group#banner-group-2(style="display:none")
+                each imgSrc in ['banner/4.jpg', 'banner/5.jpg', 'banner/6.jpg']
+                    img(src=imgSrc height="212.5", width="400")
+            .banner-group#banner-group-3(style="display:none")
+                each imgSrc in ['banner/7.jpg', 'banner/8.jpg', 'banner/9.jpg']
+                    img(src=imgSrc height="212.5", width="400")
+            .banner-group#banner-group-4(style="display:none")
+                each imgSrc in ['banner/10.jpg', 'banner/4.jpg', 'banner/7.jpg']
+                    img(src=imgSrc height="212.5", width="400")
+        button.btn.btn-outline-secondary.bg-red.next-btn(type="button") Next
 
+    script.
+        const bannerGroups = document.querySelectorAll('.banner-group');
+        const previousBtn = document.querySelector('.previous-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentGroupIndex = 0;
+        const numGroups = bannerGroups.length;
+        const switchDelay = 10000; // 10 seconds
+
+        function switchBannerGroup(index) {
+            bannerGroups.forEach(group => {
+                group.style.display = 'none';
+            });
+            bannerGroups[index].style.display = 'block';
+            currentGroupIndex = index;
+        }
+
+        function switchToNextGroup() {
+            const nextIndex = (currentGroupIndex + 1) % numGroups;
+            switchBannerGroup(nextIndex);
+        }
+
+        function switchToPreviousGroup() {
+            const previousIndex = (currentGroupIndex - 1 + numGroups) % numGroups;
+            switchBannerGroup(previousIndex);
+        }
+
+        previousBtn.addEventListener('click', switchToPreviousGroup);
+        nextBtn.addEventListener('click', switchToNextGroup);
+
+        setInterval(switchToNextGroup, switchDelay);
+
+        switchBannerGroup(0);
