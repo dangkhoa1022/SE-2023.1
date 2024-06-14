@@ -117,7 +117,7 @@ const manageProfit = catchAsync(async (req, res) => {
 		return res.status(404).json({ message: "No orders found." });
 	}
 	res.status(200).render('manage_profit', {
-		title: 'All orders',
+		title: 'Check Profit',
 		orders,
 	});
   });
