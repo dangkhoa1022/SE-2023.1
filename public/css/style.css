@@ -130,8 +130,11 @@
   }
   
   .card.my-2:hover .dropdown-content{
-    transform: scale(1.5);
+    transform: scale(1.0);
     display: block;
+    width: 400px;
+    margin: 0 auto;
+    position: absolute;
   }
 
   
