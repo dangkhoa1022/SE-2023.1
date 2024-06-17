@@ -149,9 +149,9 @@ block content
                             each laptop in laptops 
                                 .product-card.col-xl-3.col-md-4.col-sm-6.col-12
                                     .card.my-2
-                                        a.border-bottom.border-secondary(href=`/${laptop.product_id}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
+                                        a.border-bottom.border-secondary(href=`/${laptop.slug}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
                                         .card-body.text-truncate
-                                            span.small= laptop.product_name
+                                            span.small= laptop.name_model
                                             span.small (#{laptop.cpu} | #{laptop.ram}GB | #{laptop.ssd}GB)
                                             br
                                             br
@@ -161,19 +161,19 @@ block content
                                             span.h5.font-weight-bolder.card-text.text-danger #{parseFloat(laptop.new_price).toLocaleString('en-US')} đ
                                             br
                                             br
-                                            button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#exampleModal${laptop.product_id}`) Cập nhật
-                                            .modal.fade( id =`exampleModal${laptop.product_id}` tabindex='-1' aria-labelledby=`exampleModalLabel${laptop.product_id}` aria-hidden='true' data-product = `${laptop.product_id}`)
+                                            button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#exampleModal${laptop.slug}`) Cập nhật
+                                            .modal.fade( id =`exampleModal${laptop.slug}` tabindex='-1' aria-labelledby=`exampleModalLabel${laptop.slug}` aria-hidden='true' data-product = `${laptop.slug}`)
                                                 .modal-dialog
                                                     .modal-content.bg-white
                                                         .modal-header.bg-white
-                                                            h5(id = `exampleModalLabel${laptop.product_id}`).modal-title Cập nhật thông tin sản phẩm
+                                                            h5(id = `exampleModalLabel${laptop.slug}`).modal-title Cập nhật thông tin sản phẩm
                                                             button.close(type='button' data-dismiss='modal' aria-label='Close')
                                                             span(aria-hidden='true') &times;
                                                         .modal-body.bg-white
-                                                            form(id =`update-form${laptop.product_id}` data-product = `${laptop.product_id}`)
+                                                            form(id =`update-form${laptop.slug}` data-product = `${laptop.slug}`)
                                                                 .form-group
                                                                     label(for='p_product_name') Tên sản phẩm
-                                                                    input#p_product_name.form-control(type='text' value =`${laptop.product_name}`)
+                                                                    input#p_product_name.form-control(type='text' value =`${laptop.name_model}`)
                                                                 .form-group
                                                                     label(for='p_new_price') Giá
                                                                     input#p_new_price.form-control(type='text' value =`${parseFloat(laptop.new_price)}`)
@@ -236,8 +236,8 @@ block content
                 
                                                                 
                                                         .modal-footer
-                                                            button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.product_id}`) Cập nhật
-                                                            button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.product_id}`) Xóa khỏi kho
+                                                            button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.slug}`) Cập nhật
+                                                            button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.slug}`) Xóa khỏi kho
                                                             
                 .d-flex.justify-content-center.bg-white.py-3
                     if pageCurrent > 1 || laptops.length == 0
@@ -249,6 +249,7 @@ block content
             
 
 block append script
+    script(src="js/mapBox.mjs") 
     script(src="js/filter.mjs") 
     script(src="js/purchase.mjs") 
     script(src="js/manage.js") 

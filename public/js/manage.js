@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-const getProductFromForm = (id = -1) => {
+const getProductFromForm = (slug = -1) => {
     const formValues = {};
+    
     let formElement;
-    if (id > -1) {
-        formElement = document.querySelector(`form#update-form${id}`);
+    if (slug > -1) {
+        formElement = document.querySelector(`form#update-form${slug}`);
     } else {
         formElement = document.querySelector(`form#create-form`);
     }
+    
     formValues['productName'] = formElement.querySelector('input#p_product_name').value;
     formValues['oldPrice'] = parseInt(formElement.querySelector('input#p_old_price').value);
     formValues['discountPercentage'] = parseInt(formElement.querySelector('input#p_discount_percentage').value);
@@ -23,39 +25,39 @@ const getProductFromForm = (id = -1) => {
     formValues['cpuType'] = formElement.querySelector('select#p_cpu_type').options[formElement.querySelector('select#p_cpu_type').selectedIndex].value;
     formValues['available'] = parseInt(formElement.querySelector('select#p_available').options[formElement.querySelector('select#p_available').selectedIndex].value);
     formValues['gpuOnboard'] = parseInt(formElement.querySelector('select#p_gpu_onboard').options[formElement.querySelector('select#p_gpu_onboard').selectedIndex].value);
-    formValues['productId'] = formElement.dataset.product;
+    formValues['productslug'] = formElement.dataset.product;
 
     return formValues;
 };
 
-const updateProduct = async (id) => {
+const updateProduct = async (slug) => {
     try {
         const res = await axios({
             method: 'PATCH',
-            url: `/api/products/${id}`,
-            data: getProductFromForm(id)
+            url: `/api/products/${slug}`,
+            data: getProductFromForm(slug)
         });
         if (res.data.status === 'success') {
             showAlert('success', 'Updated successfully!');
         }
     } catch (err) {
         console.log(err);
-        showAlert('error', 'Invalid Update');
+        showAlert('error', 'Invalslug Update');
     }
 };
 
-const deleteProduct = async (id) => {
+const deleteProduct = async (slug) => {
     try {
         const res = await axios({
             method: 'DELETE',
-            url: `/api/products/${id}`
+            url: `/api/products/${slug}`
         });
         if (res.status === 204) {
             showAlert('success', 'Deleted successfully!');
         }
     } catch (err) {
         console.log(err);
-        showAlert('error', 'Invalid Delete');
+        showAlert('error', 'Invalslug Delete');
     }
 };
 
@@ -71,21 +73,21 @@ const createProduct = async () => {
         }
     } catch (err) {
         console.log(err);
-        showAlert('error', 'Invalid Creation');
+        showAlert('error', 'Invalslug Creation');
     }
 };
 
 const updateBtns = document.querySelectorAll('button.btn.btn-primary.btn-update');
 updateBtns.forEach(e => {
     e.onclick = () => {
-        updateProduct(e.dataset.id);
+        updateProduct(e.dataset.slug);
     };
 });
 
 const deleteBtns = document.querySelectorAll('button.btn.btn-danger.btn-delete');
 deleteBtns.forEach(e => {
     e.onclick = () => {
-        deleteProduct(e.dataset.id);
+        deleteProduct(e.dataset.slug);
     };
 });
 
