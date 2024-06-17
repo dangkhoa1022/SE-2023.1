@@ -57,11 +57,13 @@
 
                                         .dropdown-menu
                                             if user.role === 'admin'
-                                                a.dropdown-item(href='/manage') Quản lý sản phẩm
+                                                a.dropdown-item(href='/manage-product') Quản lý sản phẩm
+                                                a.dropdown-item(href='/manage-profit') Quản lý doanh thu
+                                                a.dropdown-item(href='/manage-order') Quản lý đơn hàng
                                             else
-                                                a.dropdown-item(href='/mycart') Giỏ hàng
-                                                a.dropdown-item(href='/myorder') Đơn hàng
-                                                a.dropdown-item(href='/my-profile') Thông tin tài khoản
+                                                a.dropdown-item(href='/my-cart') Giỏ hàng
+                                                a.dropdown-item(href='/my-order') Đơn hàng
+                                                a.dropdown-item(href='/change-password') Đổi mật khẩu
                                             .dropdown-divider
                                             a.dropdown-item.logout-btn(href='#') Đăng xuất
                             else 
@@ -74,10 +76,11 @@
                     .col-12.col-xl-2.col-sm-3.col-lg-3
                         .row.align-items-center
                             .col-xl-4.col-sm-8
-                                a(href = `${user === null? "login":"/mycart" }` style = "text-decoration: none").text-white
-                                    .cart-icon-wrapper(style='position: relative; display: inline-block;')
-                                        i.fa-solid.fa-cart-shopping(style='font-size: 30px')
-                                        span.cart-count(style='position: absolute; top: -15px; right: -15px; background-color: #df4545; color: white; font-size: 12px; padding: 3px 10px; border-radius: 50%;') #{cart? cart.items.length : 0}
+                                if user && user.role === 'user'
+                                    a(href = `${user === null? "login":"/my-cart" }` style = "text-decoration: none").text-white
+                                        .cart-icon-wrapper(style='position: relative; display: inline-block;')
+                                            i.fa-solid.fa-cart-shopping(style='font-size: 30px')
+                                            span.cart-count(style='position: absolute; top: -15px; right: -15px; background-color: #df4545; color: white; font-size: 12px; padding: 3px 10px; border-radius: 50%;') #{cart? cart.items.length : 0}
     .container-fluid.py-2
         .row.align-items-center.text-white
             .dropdown
