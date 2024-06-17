@@ -30,7 +30,7 @@ const getProduct = catchAsync(async (req, res, next) => {
     if (!product) next(new appError('There is no product with that name', 404));
 
 	res.status(200).render('product', {
-		title: product?.name_model,
+		title: product.name,
 		product,
 	});
 });
