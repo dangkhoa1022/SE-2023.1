@@ -42,8 +42,4 @@ app.use('/api/users', userRouter);
 app.use('/api/purchase', purchaseRouter);
 app.use('/api/cart', cartRouter);
 
-
-app.get('/product/:slug', getProduct);
-app.get('/manage', getManageProduct);
-
 export default app;
