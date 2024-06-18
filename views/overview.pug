@@ -76,6 +76,7 @@ block content
                                 a.dropdown-item.ram-filter(data-minram = "4" data-maxram= "8") 8GB
                                 a.dropdown-item.ram-filter(data-minram = "8" data-maxram= "16") 16GB
                                 a.dropdown-item.ram-filter(data-minram = "16" data-maxram= "128") > 16GB
+                              
                 .container-fluid.bg-white.pt-3
                     .row.align-items-center.border.border-light
                         h6.col-xl-2.col-3 Sắp xếp theo 
@@ -91,9 +92,42 @@ block content
                         else 
                             each laptop in laptops 
                                 .product-card.col-xl-3.col-md-4.col-sm-6.col-12
+                                    
                                     .card.my-2
                                         a.border-bottom.border-secondary(href=`/${laptop.slug}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
+                                        .dropdown-content 
+                                            .card.border-danger.mb-3(style = "position: relative")
+                                                .km-flag.bg-danger
+                                                    i.fa-solid.fa-gift.text-white
+                                                    span.text-white.font-weight-bold  KHUYẾN MÃI
+                                                .card-body
+                                                    br
+                                                    br
+                                                    i.fa-solid.fa-gift.text-warning
+                                                    span.h5.font-weight-bold.small.text-danger  Bộ quà tặng bao gồm:
+                                                    br
+                                                    br
+                                                    span.small ✦ Túi cho máy Notebook (TUNB0009) 
+                                                    br
+                                                    span.small ✦ Chuột không dây AP2021(MUKH0061)
+                                                    br
+                                                    span.small ✦ Giá không hỗ trợ thanh toán Visa, không áp dụng chương trình Qrcode
+                                                    br
+                                                    br
+                                                    i.fa-solid.fa-gift.text-warning
+                                                    span.h5.font-weight-bold.small.text-danger  Ưu đãi mua kèm giá hấp dẫn:
+                                                    br
+                                                    br
+                                                    span.small ✦ Ưu đãi giảm 10% khi mua ổ cắm điện và phụ kiện.
+                                                    br
+                                                    span.small ✦ Ưu đãi mua cùng TPLink WR940N Bộ phát không dây chỉ với giá 399.000vnđ (WFTP0005) TPLink TL WR940N
+                                                    br
+                                                    span.small ✦ Giảm giá màn hình lên tới 1.000.000đ khi mua cùng màn hình.
+                                                    br 
+                                                    span.small ✦ Ưu đãi giảm giá 50% khi mua túi chống sốc HP 14-15,6" cao cấp.
                                         .card-body.text-truncate
+
+
                                             span.small= laptop.name_model
                                             br
                                             span.small (#{laptop.cpu}|#{laptop.ram}GB)
@@ -111,6 +145,8 @@ block content
                                                 a.text-primary So sánh
                                                 if user !== null
                                                     button.btn.btn-white.purchase-btn(data-user = `${user === null ? null :user._id}` data-item = `${laptop.id}`): i.text-primary.h5(class="fa-solid fa-cart-shopping")
+                                    
+                                        
                 if laptops.length > 0
                     .d-flex.justify-content-center.bg-white.py-3
                         if pageCurrent > 1

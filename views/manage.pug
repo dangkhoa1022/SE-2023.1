@@ -148,10 +148,13 @@ block content
                         else 
                             each laptop in laptops 
                                 .product-card.col-xl-3.col-md-4.col-sm-6.col-12
+                                    
                                     .card.my-2
+
                                         a.border-bottom.border-secondary(href=`/${laptop.slug}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
                                         .card-body.text-truncate
                                             span.small= laptop.name_model
+
                                             span.small (#{laptop.cpu} | #{laptop.ram}GB | #{laptop.ssd}GB)
                                             br
                                             br
@@ -236,8 +239,10 @@ block content
 
 
                                                         .modal-footer
+
                                                             button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.slug}`) Cập nhật
                                                             button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.slug}`) Xóa khỏi kho
+                                    .dropdown-content
 
                 .d-flex.justify-content-center.bg-white.py-3
                     if pageCurrent > 1 || laptops.length == 0
