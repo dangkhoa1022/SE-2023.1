@@ -24,13 +24,13 @@ block content
                             a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "15000000" data-minprice = "10000000" ) 10 - 15 triệu
                             a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "20000000" data-minprice = "15000000" ) 15 - 20 triệu
                             a: button(type="button" class="btn btn-light m-1 price-filter" data-maxprice= "100000000" data-minprice = "20000000" ) > 20 triệu                         
-                    .row.align-items-center.d-none.d-sm-block
-                        h6.col-xl-2 Dung lượng RAM
-                        .col-xl-10(class="btn-group" role="group" aria-label="Button group")
-                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "4" ) 4GB
-                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "8" ) 8GB
-                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "16" ) 16GB
-                            a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "32" ) 32GB
+                    //- .row.align-items-center.d-none.d-sm-block
+                    //-     h6.col-xl-2 Dung lượng RAM
+                    //-     .col-xl-10(class="btn-group" role="group" aria-label="Button group")
+                    //-         a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "4" ) 4GB
+                    //-         a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "8" ) 8GB
+                    //-         a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "16" ) 16GB
+                    //-         a: button(type="button" class="ram-filter btn btn-light m-1" data-ram = "32" ) 32GB
                     //For mobile
                     .d-flex.justify-content-center.d-block.d-sm-none
                         .dropdown.mx-1
@@ -56,13 +56,13 @@ block content
                                 a.dropdown-item.cpu-filter( data-cpu = 'r3' ) AMD Ryzen 3
                                 a.dropdown-item.cpu-filter( data-cpu = 'r5' ) AMD Ryzen 5
                                 a.dropdown-item.cpu-filter( data-cpu = 'r7' ) AMD Ryzen 7
-                        .dropdown.mx-1
-                            a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") RAM
-                            .dropdown-menu
-                                a.dropdown-item.ram-filter(data-ram = "4"  ) 4GB
-                                a.dropdown-item.ram-filter(data-ram = "8" ) 8GB
-                                a.dropdown-item.ram-filter(data-ram = "16"  ) 16GB
-                                a.dropdown-item.ram-filter(data-ram = "32" ) 32GB
+                        //- .dropdown.mx-1
+                        //-     a.btn.btn-secondary.dropdown-toggle(href="#" role="button" data-toggle="dropdown" aria-expanded="false") RAM
+                        //-     .dropdown-menu
+                        //-         a.dropdown-item.ram-filter(data-ram = "4"  ) 4GB
+                        //-         a.dropdown-item.ram-filter(data-ram = "8" ) 8GB
+                        //-         a.dropdown-item.ram-filter(data-ram = "16"  ) 16GB
+                        //-         a.dropdown-item.ram-filter(data-ram = "32" ) 32GB
                 .container-fluid.bg-white.pt-3
                     .row.align-items-center.border.border-light
                         h6.col-xl-2.col-3 Sắp xếp theo 
@@ -75,7 +75,7 @@ block content
                     .row.align-items-center.border.border-light
                         h6.col-xl-2.col-3 Số lượng sản phẩm: #{laptops.length} 
                         .col-xl-10.col-9(class="btn-group" role="group" aria-label="Button group")
-                            a(href = '/manage'): button(type="button" class="btn btn-primary m-1") Cập nhật lại    <i class="fa-solid fa-rotate-right"></i>
+                            a(href = '/manage-product'): button(type="button" class="btn btn-primary m-1") Cập nhật lại    <i class="fa-solid fa-rotate-right"></i>
                             a: button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#createModal` style='margin-top: 4px; margin-left: 10px;') Thêm sản phẩm mới
                             .modal.fade( id =`createModal` tabindex='-1' aria-labelledby=`createModalLabel` aria-hidden='true' data-product = ``)
                                 .modal-dialog
@@ -137,43 +137,43 @@ block content
                                                     select#p_available.form-control
                                                         option(value = '1' selected='selected') Cho phép bán
                                                         option(value = '0') Ngưng bán
-                                                        
+
                                         .modal-footer
                                             button.btn.btn-primary.btn-create(type='button') Tạo
-                
+
                     .row.pt-3
-                        
+
                         if laptops.length == 0
                             h5.col-12.pt-5.pb-5.text-center Không có sản phẩm phù hợp
                         else 
                             each laptop in laptops 
                                 .product-card.col-xl-3.col-md-4.col-sm-6.col-12
                                     .card.my-2
-                                        a.border-bottom.border-secondary(href=`/${laptop.product_id}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
+                                        a.border-bottom.border-secondary(href=`/${laptop.slug}`): img.card-img-top(src=`/laptop/${laptop.image[0]}` alt="laptop")
                                         .card-body.text-truncate
-                                            span.small= laptop.product_name
+                                            span.small= laptop.name_model
                                             span.small (#{laptop.cpu} | #{laptop.ram}GB | #{laptop.ssd}GB)
                                             br
                                             br
-                                            span.font-weight-bold.card-text.line-through.text-secondary #{parseFloat(laptop.old_price).toLocaleString('en-US')} đ
+                                            span.font-weight-bold.card-text.line-through.text-secondary #{parseFloat(laptop.price).toLocaleString('en-US')} đ
                                             span.font-weight-bold.py-2.px-2.badge.badge-warning.rounded-circle.ml-3.text-white -#{laptop.discount_percentage}%
                                             br
                                             span.h5.font-weight-bolder.card-text.text-danger #{parseFloat(laptop.new_price).toLocaleString('en-US')} đ
                                             br
                                             br
-                                            button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#exampleModal${laptop.product_id}`) Cập nhật
-                                            .modal.fade( id =`exampleModal${laptop.product_id}` tabindex='-1' aria-labelledby=`exampleModalLabel${laptop.product_id}` aria-hidden='true' data-product = `${laptop.product_id}`)
+                                            button.btn.btn-primary(type='button' data-toggle='modal' data-target=`#exampleModal${laptop.slug}`) Cập nhật
+                                            .modal.fade( id =`exampleModal${laptop.slug}` tabindex='-1' aria-labelledby=`exampleModalLabel${laptop.slug}` aria-hidden='true' data-product = `${laptop.slug}`)
                                                 .modal-dialog
                                                     .modal-content.bg-white
                                                         .modal-header.bg-white
-                                                            h5(id = `exampleModalLabel${laptop.product_id}`).modal-title Cập nhật thông tin sản phẩm
+                                                            h5(id = `exampleModalLabel${laptop.slug}`).modal-title Cập nhật thông tin sản phẩm
                                                             button.close(type='button' data-dismiss='modal' aria-label='Close')
                                                             span(aria-hidden='true') &times;
                                                         .modal-body.bg-white
-                                                            form(id =`update-form${laptop.product_id}` data-product = `${laptop.product_id}`)
+                                                            form(id =`update-form${laptop.slug}` data-product = `${laptop.slug}`)
                                                                 .form-group
                                                                     label(for='p_product_name') Tên sản phẩm
-                                                                    input#p_product_name.form-control(type='text' value =`${laptop.product_name}`)
+                                                                    input#p_product_name.form-control(type='text' value =`${laptop.name_model}`)
                                                                 .form-group
                                                                     label(for='p_new_price') Giá
                                                                     input#p_new_price.form-control(type='text' value =`${parseFloat(laptop.new_price)}`)
@@ -233,22 +233,23 @@ block content
                                                                         else 
                                                                             option(value = '1') Cho phép bán
                                                                             option(value = '0' selected='selected') Ngưng bán
-                
-                                                                
+
+
                                                         .modal-footer
-                                                            button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.product_id}`) Cập nhật
-                                                            button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.product_id}`) Xóa khỏi kho
-                                                            
+                                                            button.btn.btn-primary.btn-update(type='button' data-id = `${laptop.slug}`) Cập nhật
+                                                            button.btn.btn-danger.btn-delete(type='button' data-id = `${laptop.slug}`) Xóa khỏi kho
+
                 .d-flex.justify-content-center.bg-white.py-3
                     if pageCurrent > 1 || laptops.length == 0
                         button.btn.btn-light.paginationBtn(data-page=`${pageCurrent-1}`) Trước  
                     if laptops.length > 0
                         button.btn.btn-light.paginationBtn(data-page=`${pageCurrent+1}`) Tiếp                
                             // Modal
-                
-            
+
+
 
 block append script
+    script(src="js/mapBox.mjs") 
     script(src="js/filter.mjs") 
     script(src="js/purchase.mjs") 
     script(src="js/manage.js") 
