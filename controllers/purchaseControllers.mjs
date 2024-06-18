@@ -1,4 +1,3 @@
-import User from '../models/userModel.mjs';
 import catchAsync from '../ultils/catchAsync.mjs';
 import Stripe from 'stripe';
 import PurchaseItem from '../models/purchaseItemModel.mjs';
@@ -36,17 +35,15 @@ const addItemToCart = catchAsync(async (req, res, next) => {
 		status: 'success',
 	});
 });
+
 const deleteItemInCart = catchAsync(async (req, res, next) => {
 	const { deletedIds, cartId } = req.body;
 	if (cartId) {
 		const cart = await Cart.findById(cartId);
-		console.log(cart.items.map((item) => item._id));
-		console.log(deletedIds);
 		cart.items = cart.items.filter(
 			(item) => !deletedIds.includes(item._id.toString()),
 		);
 		cart.save();
-		console.log(cart.items.length);
 	} else {
 		const promises = deletedIds.map(async (id) => {
 			return await PurchaseItem.findByIdAndDelete(id);
@@ -65,7 +62,9 @@ const checkOutSession = catchAsync(async (req, res) => {
 	//2. Create checkout session
 	const session = await stripe.checkout.sessions.create({
 		payment_method_types: ['card'],
-		success_url: `${req.protocol}://${req.get('host')}/`,
+		success_url: `${req.protocol}://${req.get(
+			'host',
+		)}/api/purchase/create-stripe?query=${req.query.query}`,
 		cancel_url: `${req.protocol}://${req.get('host')}/mycart`,
 		line_items: [
 			{
@@ -92,7 +91,6 @@ const checkOutSession = catchAsync(async (req, res) => {
 
 const updateCart = catchAsync(async (req, res, next) => {
 	const { updatedItems } = req.body;
-	console.log(updatedItems);
 	let promises = updatedItems.map(async (item) => {
 		return await PurchaseItem.findByIdAndUpdate(item.id, {
 			$set: {
@@ -108,19 +106,37 @@ const updateCart = catchAsync(async (req, res, next) => {
 });
 
 const createOrder = catchAsync(async (req, res, next) => {
-	console.log(req.body);
 	const newOrder = new Order({
 		...req.body,
 		userId: req.user._id,
 	});
 	await newOrder.save();
-	res.status(201).json({
-		status: 'success',
+	res.status(201).redirect('/myorder');
+});
+
+const createOrderStripe = catchAsync(async (req, res, next) => {
+	let body = JSON.parse(req.query.query);
+
+	const deletedIds = body.items;
+
+	const cart = await Cart.findOne({
+		userId: req.user._id,
 	});
+	cart.items = cart.items.filter(
+		(item) => !deletedIds.includes(item._id.toString()),
+	);
+	cart.save();
+
+	const newOrder = new Order({
+		...body,
+		userId: req.user._id,
+		paid: true,
+	});
+	await newOrder.save();
+	res.status(201).redirect('/myorder');
 });
 
 const updateOrder = catchAsync(async (req, res, next) => {
-	console.log(req.body);
 	await Order.findByIdAndUpdate(req.body.id, {
 		...req.body,
 	});
@@ -136,4 +152,5 @@ export {
 	updateCart,
 	createOrder,
 	updateOrder,
+	createOrderStripe,
 };

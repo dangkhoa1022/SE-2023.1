@@ -12,6 +12,9 @@ import viewRouter from './routes/viewRoute.mjs';
 import userRouter from './routes/userRoute.mjs';
 import purchaseRouter from './routes/purchaseRoute.mjs';
 import cartRouter from './routes/cartRoute.mjs';
+import { getProduct } from './controllers/productControllers.mjs';
+import { getManageProduct } from './controllers/viewControllers.mjs';
+
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const app = express();

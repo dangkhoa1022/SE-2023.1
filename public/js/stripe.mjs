@@ -82,48 +82,50 @@ const paymentMethodInputs = document.querySelectorAll(
 	`input[name="gridRadios"]`,
 );
 
-paymentMethodInputs.onclick = (e) => {
-	e.checked = !e.checked;
-};
+paymentMethodInputs[0].checked = true;
+
+paymentMethodInputs.forEach(
+	(input) =>
+		(input.onclick = (e) => {
+			e.checked = !e.checked;
+		}),
+);
 
 const submitButton = document.querySelector('button.submit.btn.btn-primary');
 
 submitButton.onclick = async () => {
-	const receiverName = receiverNameInput.value.trim();
-	const address = addressInput.value.trim();
-	const phone = phoneNumInput.value.trim();
-	const note = noteInput.value.trim() || '';
-	const paymentMethodInput = Array.from(paymentMethodInputs).find(
-		(input) => input.checked,
-	);
-	const paymentMethod = paymentMethodInput.value;
-	const deliveryData = {
-		receiverName,
-		address,
-		phone,
-		note,
-		paymentMethod,
-	};
-	if (validateInput()) return;
+	try {
+		const receiverName = receiverNameInput.value.trim();
+		const address = addressInput.value.trim();
+		const phone = phoneNumInput.value.trim();
+		const note = noteInput.value.trim() || '';
+		const paymentMethodInput = Array.from(paymentMethodInputs).find(
+			(input) => input.checked,
+		);
+		if (validateInput()) return;
+		const paymentMethod = paymentMethodInput.value;
+		const deliveryData = {
+			receiverName,
+			address,
+			phone,
+			note,
+			paymentMethod: paymentMethod || 'COD',
+		};
 
-	if (paymentMethod === 'COD') {
-		await paymentWithCOD(deliveryData);
-	} else {
-		await paymentWithStripe(deliveryData);
+		const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
+		const deletedIds = selectedItems.map((item) => item.purchaseItem);
+		if (paymentMethod === 'COD') {
+			await paymentWithCOD(deliveryData);
+			emptyCart(cartId, deletedIds);
+		} else {
+			await paymentWithStripe(deliveryData, cartId, deletedIds);
+		}
+
+		window.location.replace('/myorder');
+	} catch (err) {
+		console.log(err);
+		showAlert('error', err.message);
 	}
-
-	const cartId = JSON.parse(document.querySelector('h3').dataset.cartid);
-	console.log('delete online');
-	fetch(`http://localhost:8000/api/cart/delete`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			cartId,
-			deletedIds: selectedItems.map((item) => item.purchaseItem),
-		}),
-	});
 };
 
 const validateInput = () => {
@@ -133,11 +135,23 @@ const validateInput = () => {
 		const value = input.querySelector('input').value.trim();
 		const msg = input.querySelector('.err-msg');
 		if (!msg) return;
-		if (value === '') {
-			invalid = true;
-			msg.style.display = 'block';
+		const inputId = input.querySelector('input').getAttribute('id');
+
+		if (inputId === 'phoneNum') {
+			const phoneRegex = /^0\d{9}$/;
+			if (!phoneRegex.test(value)) {
+				invalid = true;
+				msg.style.display = 'block';
+			} else {
+				msg.style.display = 'none';
+			}
 		} else {
-			msg.style.display = 'none';
+			if (value === '') {
+				invalid = true;
+				msg.style.display = 'block';
+			} else {
+				msg.style.display = 'none';
+			}
 		}
 	});
 	return invalid;
@@ -162,14 +176,13 @@ const paymentWithCOD = async (deliveryData) => {
 			...deliveryData,
 			items: selectedItems.map((item) => item.purchaseItem),
 			totalPrice: selectedItems.reduce((total, item) => {
-				console.log(item);
 				return total + item.laptop.price * parseInt(item.quantity);
 			}, 0),
 		}),
 	});
 };
 
-const paymentWithStripe = async (deliveryData) => {
+const paymentWithStripe = async (deliveryData, cartId, deletedIds) => {
 	let totalCost = selectedItems.reduce((total, item) => {
 		return total + item.laptop.price * parseInt(item.quantity);
 	}, 0);
@@ -180,17 +193,26 @@ const paymentWithStripe = async (deliveryData) => {
 		);
 		return;
 	}
-	await purchaseItems(totalCost);
+	await purchaseItems(totalCost, deliveryData);
 };
 
 const stripe = Stripe(
 	'pk_test_51MpCA0DfcEM9cIAmWGiqdhqfCoGX8bIXqDW2miaXFhARb39RzUhokPTAZ6KNPkNfzmY6OiBjN7xzpcXolzo1KclG00YIVSUyC6',
 );
 
-const purchaseItems = async (total) => {
+const purchaseItems = async (total, deliveryData) => {
+	let query = JSON.stringify({
+		...deliveryData,
+		items: selectedItems.map((item) => item.purchaseItem),
+		totalPrice: selectedItems.reduce((total, item) => {
+			return total + item.laptop.price * parseInt(item.quantity);
+		}, 0),
+	});
 	try {
 		//1. Get checkout session from API
-		const session = await axios(`/api/purchase/checkout-session/${total}`);
+		const session = await axios(
+			`/api/purchase/checkout-session/${total}?query=${query}`,
+		);
 		//2. Create checkout form + charge credit card
 		stripe.redirectToCheckout({
 			sessionId: session.data.session.id,
@@ -199,4 +221,17 @@ const purchaseItems = async (total) => {
 		showAlert('error', error);
 		throw error;
 	}
+};
+
+const emptyCart = async (cartId, deletedIds) => {
+	fetch(`http://localhost:8000/api/cart/delete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			cartId,
+			deletedIds,
+		}),
+	});
 };
