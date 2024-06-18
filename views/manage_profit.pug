@@ -1,0 +1,110 @@
+extend base
+
+block content
+	.bg-light
+		.container.bg-white.p-5
+			h3 Doanh thu cửa hàng
+			nav
+				.nav.nav-tabs.nav-justified(id="nav-tab" role="tablist")
+					button.nav-link.active(
+						id="nav-total-tab" 
+						data-toggle="tab" 
+						data-target="#nav-total" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-total" 
+						aria-selected="true"
+					) Tổng quát 
+
+						//- Vẽ một sơ đồ doanh thu tính theo các tháng của cửa hàng
+
+					button.nav-link(
+						id="nav-month-tab" 
+						data-toggle="tab" 
+						data-target="#nav-month" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-month" 
+						aria-selected="false"
+					) Tháng này 
+
+						//- Thống kê các mặt hàng đã bán trong tháng hiện tại
+
+					button.nav-link(
+						id="nav-product-tab" 
+						data-toggle="tab" 
+						data-target="#nav-product" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-product" 
+						aria-selected="false"
+					) Bán chạy
+						
+						//- Danh sách sắp xếp các mặt hàng theo số lượng đã giao thành công cao đến thấp
+
+					button.nav-link(
+						id="nav-product-tab" 
+						data-toggle="tab" 
+						data-target="#nav-price" 
+						type="button" 
+						role="tab" 
+						aria-controls="nav-price" 
+						aria-selected="false"
+					) Khoảng giá
+
+
+						//- Danh sách xắp sếp theo giá trị từng máy tính theo giá bán 
+
+				.tab-content(id="nav-tabContent" data-orders = `${JSON.stringify(orders) }`)
+					.tab-pane.fade.show.active(
+						id="nav-total" 
+						role="tabpanel" 
+						aria-labelledby="nav-total-tab"
+					) 
+						ul#pending-order.list-unstyled(data-status='total')
+						
+					.tab-pane.fade(
+						id="nav-month" 
+						role="tabpanel" 
+						aria-labelledby="nav-month-tab"
+					) 
+						ul#delivering-order.list-unstyled(data-status='month')
+
+					.tab-pane.fade(
+						id="nav-product" 
+						role="tabpanel" 
+						aria-labelledby="nav-product-tab"
+					) 
+						ul#success-order.list-unstyled(data-status='product')
+
+					.tab-pane.fade(
+						id="nav-price" 
+						role="tabpanel" 
+						aria-labelledby="nav-price-tab"
+					) 
+						ul#rejected-order.list-unstyled(data-status='price')
+
+block append script 
+	script(src="js/manageProfit.js") 
+	script(src="https://cdn.jsdelivr.net/npm/chart.js") 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

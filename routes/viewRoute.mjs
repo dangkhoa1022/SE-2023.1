@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+
 	getLoginForm,
 	getOverview,
 	getProduct,
@@ -9,6 +10,8 @@ import {
 	getManageProduct,
 	getMyOrder,
 	manageOrder,
+  manageProfit,
+
 } from '../controllers/viewControllers.mjs';
 import {
 	isLoggedIn,
@@ -20,11 +23,13 @@ const Router = express.Router();
 Router.get('/login', getLoginForm);
 Router.get('/signup', getSignupForm);
 Router.use(isLoggedIn);
+
 Router.get('/my-cart', getMyCart);
 Router.get('/my-order', getMyOrder);
 Router.get('/change-password', protect, changePassword);
 Router.get('/manage-order', adminOnly, manageOrder);
 Router.get('/manage-product', adminOnly, getManageProduct);
+Router.get('/manageProfit', manageProfit);
 Router.get('/:slug', getProduct);
 Router.route('/').get(getOverview);
 
